@@ -9,24 +9,35 @@ export default class Track extends THREE.Group {
         this.width = width;
         this.active = false; // activated after first "step" of physics engine
         this.axis = new THREE.Vector3(1,0,0) 
-   
-        // https://github.com/mrdoob/three.js/blob/master/examples/webgl_shader_lava.html
-        this.uniforms = {
-            time: { value: -1.0 },
-        };
-        this.trackMaterial = new THREE.ShaderMaterial( {
-            uniforms: this.uniforms,
-    		fragmentShader: document.getElementById( 'trackFragmentShader' ).textContent,
-    		vertexShader: document.getElementById( 'trackVertexShader' ).textContent
-        } );
-        this.trackMaterial.side = THREE.DoubleSide;
-        //this.trackMaterial = new THREE.MeshStandardMaterial({ color: 0xeeeeee })
-        const trackGeometry = new THREE.CylinderGeometry(radius,radius,width,512,32,true);
+        this.trackMaterials = [
+            new THREE.MeshPhongMaterial({color: 0x000020}),
+            new THREE.MeshPhongMaterial({color: 0x000040})
+        ]
+        this.trackMaterials.forEach( trackMaterial => {
+            trackMaterial.side = THREE.DoubleSide;            
+        })
+        const trackGeometry = new THREE.CylinderGeometry(
+            radius,
+            radius,
+            width,
+            64,
+            4,
+            true
+        );
+        var i = 0;
+        trackGeometry.faces.forEach(face => {
+            if (i % 16 < 8){
+                face.materialIndex = 0;
+            } else {
+                face.materialIndex = 1;
+            }
+            i++;
+        });
+        this.trackMaterial = new THREE.MeshFaceMaterial(this.trackMaterials);    
         const mesh = new THREE.Mesh( trackGeometry, this.trackMaterial);
+        mesh.receiveShadow = true;
         mesh.rotateZ(Math.PI/2)
         this.add(mesh)
-        //this.obj = new THREE.()
-        //this.obj.add(mesh)
         this.coinMaterial = new THREE.MeshLambertMaterial( { color: 0xffff00 } );
     }
 

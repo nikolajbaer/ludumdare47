@@ -17,7 +17,7 @@ function setupLights(scene) {
 
     var light = new THREE.PointLight( 'white', 1, 100);
     light.position.set(2,3,0);
-    light.castShadow = true;
+    light.castShadow = false;
     scene.add(light);
 }
 
@@ -45,9 +45,9 @@ function init(){
     var clock = new THREE.Clock();
 
    // Load Model
-    var ship = new Ship(SHIP_GLB,0.25);
+    var ship = new Ship(SHIP_GLB,0.2);
     ship.load(world, scene);
-    ship.setControlScheme(new Controls(5.5).schemes[0]);
+    ship.setControlScheme(new Controls(13).schemes[0]);
     ship.setCamera(camera);
     const health = document.getElementById("healthbar");
     window.addEventListener("damageTaken", e => {
@@ -65,7 +65,7 @@ function init(){
     const tracks = [];
 
     for(var i=0; i<2; i++){
-        var track = new Track(100 + 10*i,0.5,18 + 4*i);
+        var track = new Track(100 + 10*i, 0.5 ,30 + 4*i);
         track.generateObstacles(world);
         track.position.set(0,100,0);
         if(i > 0){
@@ -117,7 +117,7 @@ function init(){
     function animate() {
         requestAnimationFrame( animate );            
         const delta = clock.getDelta();
-        track.uniforms[ "time" ].value += 0.2 * delta;
+        //track.uniforms[ "time" ].value += 0.2 * delta;
         update(delta);
         renderer.render( scene, camera );
     }
