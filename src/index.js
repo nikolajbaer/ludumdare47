@@ -74,6 +74,8 @@ function init(){
             t.spin(delta)
         })
 
+        ship.update();
+
         world.step(delta);
         world.bodies.forEach( b => {
             if(b.mesh != undefined){
