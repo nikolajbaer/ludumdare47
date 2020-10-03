@@ -53,11 +53,11 @@ export default class Track extends THREE.Group {
 
     }
 
-    coinColected(v){
+    collect(v){
         this.collected += v;
         if(this.collected > this.required){
-            const event = CustomEvent("trackComplete", {
-                details: {
+            const event = new CustomEvent("trackComplete", {
+                detail: {
                     track: this
                 }
             })
@@ -74,7 +74,7 @@ export default class Track extends THREE.Group {
             mass: 50,
             shape: new CANNON.Sphere(0.5),
         })
-        body.value = 1; //maybe double value coins some point?
+        body.value = 5; //maybe double value coins some point?
         this.required += 1;
         world.addBody( body );
         body.mesh = cube;

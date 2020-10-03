@@ -99,8 +99,16 @@ class Ship extends THREE.Object3D {
             return;
         }
         body.remove = true;
+
         if( body.damage != undefined){
             this.applyDamage(body.damage);
+        }else if( body.value != undefined ){
+            const event = new CustomEvent("coinCollected", {
+                detail: {
+                    value: body.value
+                }
+            })
+            window.dispatchEvent( event )
         }
     }
 }
