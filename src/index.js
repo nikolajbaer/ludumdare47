@@ -33,7 +33,7 @@ function init(){
     var ship = null;
     loader.load( SHIP_GLB, function ( glb ) {
         ship = glb.scenes[0].children[0];
-        ship.position.set(0,0,0);
+        ship.position.set(0,0.5,0);
         console.log(ship)
         ship.traverse( function ( child ) {
             if ( child.isMesh ) {
@@ -47,7 +47,16 @@ function init(){
     } );
 
     const R = 100;
-    var trackMaterial = new THREE.MeshStandardMaterial({ color: 0xeeeeee })
+    //var trackMaterial = new THREE.MeshStandardMaterial({ color: 0xeeeeee })
+    // https://github.com/mrdoob/three.js/blob/master/examples/webgl_shader_lava.html
+    var trackUniforms = {
+        time: { value: 1.0 },
+    };
+    var trackMaterial = new THREE.ShaderMaterial( {
+        uniforms: trackUniforms,
+		fragmentShader: document.getElementById( 'trackFragmentShader' ).textContent,
+		vertexShader: document.getElementById( 'trackVertexShader' ).textContent
+    } );
     trackMaterial.side = THREE.DoubleSide;
     var trackGeometry = new THREE.CylinderGeometry(R,R,20,128,32,true);
     var track = new THREE.Mesh( trackGeometry, trackMaterial);
@@ -67,13 +76,14 @@ function init(){
 
     function updatePhysics(delta){
         if(ship == null){ return }
-        //track.rotateY(0.01)
+        track.rotateY(0.01)
         //ship.position.y = Math.sin(clock.elapsedTime*4) 
     }
 
     function animate() {
         requestAnimationFrame( animate );            
         const delta = clock.getDelta();
+        trackUniforms[ "time" ].value += 0.2 * delta;
         updatePhysics(delta);
         renderer.render( scene, camera );
     }

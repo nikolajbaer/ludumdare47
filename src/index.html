@@ -39,5 +39,36 @@
 		<div class="hud">
 		</div>
 	</div>
+	<script id="trackVertexShader" type="x-shader/x-vertex">
+
+			varying vec2 vUv;
+
+			void main()
+			{
+				vUv = uv;
+				vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+				gl_Position = projectionMatrix * mvPosition;
+			}
+
+	</script>
+
+	<script id="trackFragmentShader" type="x-shader/x-fragment">
+			uniform float u_time;
+			varying vec2 vUv;
+
+			void main( void ) {
+				uint a = uint(vUv.x * 100.0f);
+				uint b = uint(10);
+
+				if( a - (b * (a/b)) < uint(5) ){
+					gl_FragColor = vec4(1.0,0.0,1.0,1.0);
+				}else{
+					gl_FragColor = vec4(0.0,1.0,0.0,1.0);
+				}
+
+			}
+
+		</script>
+
 </body>
 </html>
