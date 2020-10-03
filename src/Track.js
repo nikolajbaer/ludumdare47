@@ -9,10 +9,12 @@ export default class Track extends THREE.Group {
         this.width = width;
         this.active = false; // activated after first "step" of physics engine
         this.axis = new THREE.Vector3(1,0,0) 
+        this.collected = 0
+        this.required = 0
         this.trackMaterials = [
-            new THREE.MeshPhongMaterial({color: 0x000020}),
-            new THREE.MeshPhongMaterial({color: 0x000040})
-        ]
+            new THREE.MeshLambertMaterial({color: 0x202030}),
+            new THREE.MeshLambertMaterial({color: 0x404060})
+        ];
         this.trackMaterials.forEach( trackMaterial => {
             trackMaterial.side = THREE.DoubleSide;            
         })
@@ -20,7 +22,7 @@ export default class Track extends THREE.Group {
             radius,
             radius,
             width,
-            64,
+            128,
             4,
             true
         );
@@ -38,26 +40,67 @@ export default class Track extends THREE.Group {
         mesh.receiveShadow = true;
         mesh.rotateZ(Math.PI/2)
         this.add(mesh)
-        this.coinMaterial = new THREE.MeshLambertMaterial( { color: 0xffff00 } );
+        //this.obj = new THREE.()
+        //this.obj.add(mesh)
+        this.coinMaterial = new THREE.MeshLambertMaterial( { color: 0x00ff00 } );
+        this.obstacleMaterial = new THREE.MeshLambertMaterial( { color: 0xff00ff } );
     }
 
     generateObstacles(world){
-        for(var a =0; a < 360; a+= 5){
+        // Bad things
+        for(var a =0; a < 360; a+= 10){
             const p = new THREE.Vector3(0,this.radius - 1.5,0); 
             p.applyAxisAngle(this.axis, THREE.MathUtils.degToRad(a))
             p.x = (this.width/2) - Math.random() * this.width
             this.spawnObstacle( world, p )
         }
+
+        // Good things
+        for(var a =0; a < 360; a+= 15){
+            const p = new THREE.Vector3(0,this.radius - 1.5,0); 
+            p.applyAxisAngle(this.axis, THREE.MathUtils.degToRad(a))
+            p.x = (this.width/2) - Math.random() * this.width
+            this.spawnCoin( world, p )
+        }
+
     }
 
-    spawnObstacle(world, pos){
-        var geometry = new THREE.BoxGeometry();
+    collect(v){
+        this.collected += v;
+        if(this.collected > this.required){
+            const event = new CustomEvent("trackComplete", {
+                detail: {
+                    track: this
+                }
+            })
+            window.dispatchEvent( event )
+        }
+    }
+
+    spawnCoin(world, pos){
+        var geometry = new THREE.SphereGeometry();
         var cube = new THREE.Mesh( geometry, this.coinMaterial );
         cube.position.set(pos.x,pos.y,pos.z)
         this.add( cube )
         var body = new CANNON.Body({
             mass: 50,
-            shape: new CANNON.Box(new CANNON.Vec3(0.5,0.5,0.5)),
+            shape: new CANNON.Sphere(0.5),
+        })
+        body.value = 5; //maybe double value coins some point?
+        this.required += 1;
+        world.addBody( body );
+        body.mesh = cube;
+    }
+
+
+    spawnObstacle(world, pos){
+        var geometry = new THREE.SphereGeometry();
+        var cube = new THREE.Mesh( geometry, this.obstacleMaterial );
+        cube.position.set(pos.x,pos.y,pos.z)
+        this.add( cube )
+        var body = new CANNON.Body({
+            mass: 50,
+            shape: new CANNON.Sphere(0.5),
         })
         body.damage = 5;
         world.addBody( body );

@@ -41,7 +41,7 @@ class Ship extends THREE.Object3D {
         if (this.tweenX) {
             this.mesh.position.x = this.tweenX.current;               
         }
-        this.mesh.position.y = Math.sin(this.elapsed / 2) + 1;
+        this.mesh.position.y = (Math.sin(this.elapsed * 2 + 5.2) + Math.sin(this.elapsed) + Math.sin(this.elapsed * 2.9 + 0.34) + Math.sin(this.elapsed * 4.6 + 9.3) ) / 4 / 2 + 0.5;
     }
 
     load(world,scene){
@@ -99,8 +99,16 @@ class Ship extends THREE.Object3D {
             return;
         }
         body.remove = true;
+
         if( body.damage != undefined){
             this.applyDamage(body.damage);
+        }else if( body.value != undefined ){
+            const event = new CustomEvent("coinCollected", {
+                detail: {
+                    value: body.value
+                }
+            })
+            window.dispatchEvent( event )
         }
     }
 }

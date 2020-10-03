@@ -47,13 +47,17 @@ function init(){
    // Load Model
     var ship = new Ship(SHIP_GLB,0.2);
     ship.load(world, scene);
-    ship.setControlScheme(new Controls(13).schemes[0]);
+    ship.setControlScheme(new Controls(5.5).schemes[0]);
     ship.setCamera(camera);
     const health = document.getElementById("healthbar");
     window.addEventListener("damageTaken", e => {
         console.log("Damaged!", e)
         health.textContent = `${e.detail.health.toFixed(0)}%`
         health.style.width = `${e.detail.health.toFixed(0)}%`
+    })
+    window.addEventListener("coinCollected", e => {
+        console.log("Collected!", e.detail.value)
+        tracks[currentTrack].collect(e.detail.value)
     })
     window.addEventListener("gameOver", e => {
         const el = document.getElementById("flash")
@@ -63,9 +67,9 @@ function init(){
     scene.add(ship)
 
     const tracks = [];
-
-    for(var i=0; i<2; i++){
-        var track = new Track(100 + 10*i, 0.5 ,30 + 4*i);
+    var currentTrack = 0;
+    for(var i=0; i<5; i++){
+        var track = new Track(100 + 10*i,0.5,18 + 4*i);
         track.generateObstacles(world);
         track.position.set(0,100,0);
         if(i > 0){
@@ -75,6 +79,22 @@ function init(){
         scene.add(track)
         tracks.push(track)
     }
+    window.addEventListener("trackComplete", ev => {
+        const track = ev.detail.track;
+        track.visible = false
+        currentTrack += 1 
+        if( currentTrack >= tracks.length){
+            const el = document.getElementById("flash")
+            el.textContent = "Loop Escaped!"
+            el.style.display = "block"
+        }else{
+            const nextTrack = tracks[currentTrack];
+            console.log("enabled nexst track",nextTrack)
+            nextTrack.visible = true;
+            // TODO Tween
+            nextTrack.position.y = nextTrack.radius
+        }
+     })
 
     camera.position.set(0,4,8);
     camera.lookAt(new THREE.Vector3(0,3,-1000));
@@ -117,7 +137,6 @@ function init(){
     function animate() {
         requestAnimationFrame( animate );            
         const delta = clock.getDelta();
-        //track.uniforms[ "time" ].value += 0.2 * delta;
         update(delta);
         renderer.render( scene, camera );
     }
