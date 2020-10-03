@@ -45,9 +45,9 @@ function init(){
     var clock = new THREE.Clock();
 
    // Load Model
-    var ship = new Ship(SHIP_GLB);
+    var ship = new Ship(SHIP_GLB,0.25);
     ship.load(world, scene);
-    ship.setControlScheme(new Controls().schemes[0]);
+    ship.setControlScheme(new Controls(5.5).schemes[0]);
     ship.setCamera(camera);
     const health = document.getElementById("healthbar");
     window.addEventListener("damageTaken", e => {

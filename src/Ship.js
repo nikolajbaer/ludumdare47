@@ -4,7 +4,7 @@ import * as THREE from "three";
 import Tween from "./Tween";
 
 class Ship extends THREE.Object3D {
-    constructor(model) {
+    constructor(model,slide_speed) {
         super();
         this.model = model;
         this.body = null;
@@ -12,6 +12,7 @@ class Ship extends THREE.Object3D {
         this.clock = new THREE.Clock();
         this.elapsed = 0;
         this.ready = false;
+        this.slide_speed = slide_speed
 
         // tween to target position
         this.tweenX = null;        
