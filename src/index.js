@@ -63,7 +63,7 @@ function init(){
     scene.add(ship)
 
     const tracks = [];
-
+    var currentTrack = 0;
     for(var i=0; i<2; i++){
         var track = new Track(100 + 10*i,0.5,18 + 4*i);
         track.generateObstacles(world);
@@ -75,6 +75,18 @@ function init(){
         scene.add(track)
         tracks.push(track)
     }
+    window.addEventListener("trackComplete", ev => {
+        const track = ev.track;
+        track.visible = false
+        currentTrack += 1 
+        if( currentTrack >= tracks.length){
+            const el = document.getElementById("flash")
+            el.textContent = "Loop Escaped!"
+            el.style.display = "block"
+        }
+        const nextTrack = tracks[currentTrack];
+
+    })
 
     camera.position.set(0,4,8);
     camera.lookAt(new THREE.Vector3(0,3,-1000));
