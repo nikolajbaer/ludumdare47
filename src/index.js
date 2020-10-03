@@ -5,6 +5,7 @@ import { OutlineEffect } from 'three/examples/jsm/effects/OutlineEffect.js';
 
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import SHIP_GLB from "./assets/kenney/craft_speederA.glb";
+import { Mesh } from "three";
 
 function init(){
     var scene = new THREE.Scene();
@@ -31,35 +32,50 @@ function init(){
     var loader = new GLTFLoader();
     var ship = null;
     loader.load( SHIP_GLB, function ( glb ) {
-        ship = glb.scenes[0];
+        ship = glb.scenes[0].children[0];
+        ship.position.set(0,0,0);
         console.log(ship)
-        /*ship.children.traverse( function ( child ) {
+        ship.traverse( function ( child ) {
             if ( child.isMesh ) {
                 child.castShadow = true;
                 child.receiveShadow = true;
             }
-        } );*/
+        } );
 
         scene.add( ship );
             
     } );
 
-    camera.position.set(5,10,-10);
-    camera.lookAt(new THREE.Vector3(0,0,0));
+    const R = 100;
+    var trackMaterial = new THREE.MeshStandardMaterial({ color: 0xeeeeee })
+    trackMaterial.side = THREE.DoubleSide;
+    var trackGeometry = new THREE.CylinderGeometry(R,R,20,128,32,true);
+    var track = new THREE.Mesh( trackGeometry, trackMaterial);
+    track.rotateZ(Math.PI/2)
+    track.position.set(0,R,0);
+    scene.add(track)
 
+    camera.position.set(0,4,8);
+    camera.lookAt(new THREE.Vector3(0,3,-1000));
+    //camera.lookAt(new THREE.Vector3(0,0,0));
+
+    /*
     var controls = new OrbitControls( camera, renderer.domElement );
-	controls.minDistance = 10;
-    controls.maxDistance = 100;
+    controls.minDistance = 10;
+    controls.maxDistance = 500;
+    */
 
     function updatePhysics(delta){
+        if(ship == null){ return }
+        //track.rotateY(0.01)
+        //ship.position.y = Math.sin(clock.elapsedTime*4) 
     }
 
     function animate() {
         requestAnimationFrame( animate );            
         const delta = clock.getDelta();
-
         updatePhysics(delta);
-   	    renderer.render( scene, camera );
+        renderer.render( scene, camera );
     }
     animate();
 }
