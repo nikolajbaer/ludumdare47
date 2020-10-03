@@ -5,6 +5,7 @@ import { OutlineEffect } from 'three/examples/jsm/effects/OutlineEffect.js';
 import Controls from "./controls.js";
 import Track from "./Track.js"
 import Ship from "./Ship.js"
+import SHIP_GLB from "./assets/kenney/craft_speederA.glb";
 
 function setupLights(scene) {
     var ambient = new THREE.AmbientLight( 0xffffff, 1.0 );
@@ -44,9 +45,22 @@ function init(){
     var clock = new THREE.Clock();
 
    // Load Model
-    var ship = new Ship(scene, world);
+    var ship = new Ship(SHIP_GLB);
+    ship.load(world, scene);
     ship.setControlScheme(new Controls().schemes[0]);
     ship.setCamera(camera);
+    const health = document.getElementById("healthbar");
+    window.addEventListener("damageTaken", e => {
+        console.log("Damaged!", e)
+        health.textContent = `${e.detail.health.toFixed(0)}%`
+        health.style.width = `${e.detail.health.toFixed(0)}%`
+    })
+    window.addEventListener("gameOver", e => {
+        const el = document.getElementById("flash")
+        el.textContent = "Game Over"
+        el.style.display = "block"
+    })
+    scene.add(ship)
 
     const tracks = [];
 
@@ -54,6 +68,9 @@ function init(){
         var track = new Track(100 + 10*i,0.5,18 + 4*i);
         track.generateObstacles(world);
         track.position.set(0,100,0);
+        if(i > 0){
+            track.visible = false;
+        }
         console.log(track)
         scene.add(track)
         tracks.push(track)
@@ -74,17 +91,14 @@ function init(){
             t.spin(delta)
         })
 
+        ship.update(delta,clock.elapsedTime);
+
         world.step(delta);
         world.bodies.forEach( b => {
             if(b.mesh != undefined){
-                if(b.free){
-                    b.mesh.position.copy(b.position)
-                    b.mesh.quaternion.copy(b.quaternion)
-                    b.life -= delta
-                    if(b.life <= 0){                            
-                        world.remove(b)
-                        b.mesh.parent.remove(b.mesh)
-                    }
+                if(b.remove){
+                    world.remove(b)
+                    b.mesh.parent.remove(b.mesh)
                 }else{
                     const pos = new THREE.Vector3()
                     const quat = new THREE.Quaternion()

@@ -31,7 +31,7 @@ export default class Track extends THREE.Group {
     }
 
     generateObstacles(world){
-        for(var a =0; a < 360; a+= 15){
+        for(var a =0; a < 360; a+= 5){
             const p = new THREE.Vector3(0,this.radius - 1.5,0); 
             p.applyAxisAngle(this.axis, THREE.MathUtils.degToRad(a))
             p.x = (this.width/2) - Math.random() * this.width
@@ -48,6 +48,7 @@ export default class Track extends THREE.Group {
             mass: 50,
             shape: new CANNON.Box(new CANNON.Vec3(0.5,0.5,0.5)),
         })
+        body.damage = 5;
         world.addBody( body );
         body.mesh = cube;
         body.free = false;
