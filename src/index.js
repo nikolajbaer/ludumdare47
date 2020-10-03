@@ -7,6 +7,7 @@ import Track from "./Track.js"
 import Ship from "./Ship.js"
 import SHIP_GLB from "./assets/kenney/craft_speederA.glb";
 import TWEEN from "@tweenjs/tween.js"
+import './style.css';
 
 function setupLights(scene) {
     var ambient = new THREE.AmbientLight( 0xffffff, 1.0 );
@@ -46,7 +47,7 @@ function init(){
     var clock = new THREE.Clock();
 
    // Load Model
-    var ship = new Ship(SHIP_GLB,200, 5.5);
+    var ship = new Ship(SHIP_GLB,400, 5.5);
     ship.load(world, scene);
     ship.setControlScheme(new Controls().schemes[0]);
     ship.setCamera(camera);
@@ -116,9 +117,11 @@ function init(){
     camera.lookAt(new THREE.Vector3(0,3,-1000));
     //camera.lookAt(new THREE.Vector3(0,0,0));
 
+     /*
     var controls = new OrbitControls( camera, renderer.domElement );
     controls.minDistance = 10;
     controls.maxDistance = 500;
+     */
 
     function update(delta,time){
         TWEEN.update(time)
