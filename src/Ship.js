@@ -1,12 +1,7 @@
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import * as CANNON from "cannon";
 import * as THREE from "three";
-
-function Tween(start, target, startTime, currentTime, length) {
-    var elapsed = currentTime - startTime;
-    var pct = elapsed / length;
-    return ((target - start) * pct) + start;
- } 
+import Tween from "./Tween";
 
 class Ship extends THREE.Object3D {
     constructor(model) {
@@ -19,9 +14,7 @@ class Ship extends THREE.Object3D {
         this.ready = false;
 
         // tween to target position
-        this.targetPosition = { x: 0, y: 0, z: 0 };
-        this.targetDuration = { x: 0.5 };
-        this.transitionStarts = {x: 0};
+        this.tweenX = null;        
 
         this.health = 100;
     }
@@ -44,8 +37,9 @@ class Ship extends THREE.Object3D {
         if (!this.ready)
             return;
         this.elapsed = elapsed;
-
-        this.mesh.position.x = 0;
+        if (this.tweenX) {
+            this.mesh.position.x = this.tweenX.current;               
+        }
         this.mesh.position.y = Math.sin(this.elapsed / 2) + 1;
     }
 
