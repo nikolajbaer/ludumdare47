@@ -8,6 +8,7 @@ import Ship from "./Ship.js"
 import SHIP_GLB from "./assets/kenney/craft_speederA.glb";
 import TWEEN from "@tweenjs/tween.js"
 import './style.css';
+import HUD from "./HUD.js";
 
 function setupLights(scene) {
     var ambient = new THREE.AmbientLight( 0xffffff, 1.0 );
@@ -46,6 +47,13 @@ function init(){
 
     var clock = new THREE.Clock();
 
+    const hud = new HUD(
+        document.getElementById("healthbar"),
+        document.getElementById("flash"),
+        document.getElementById("score")
+    )
+    console.log(hud)
+
    // Load Model
     var ship = new Ship(SHIP_GLB,400, 5.5);
     ship.load(world, scene);
@@ -53,24 +61,24 @@ function init(){
     ship.setCamera(camera);
     const health = document.getElementById("healthbar");
     window.addEventListener("damageTaken", e => {
-        console.log("Damaged!", e)
-        health.textContent = `${e.detail.health.toFixed(0)}%`
-        health.style.width = `${e.detail.health.toFixed(0)}%`
+        hud.update_health(e.detail.health)
     })
     window.addEventListener("coinCollected", e => {
         console.log("Collected!", e.detail.value)
         tracks[currentTrack].collect(e.detail.value)
+        hud.update_score(tracks.length - currentTrack, tracks[currentTrack])
     })
     window.addEventListener("gameOver", e => {
-        const el = document.getElementById("flash")
-        el.textContent = "Game Over"
-        el.style.display = "block"
+        hud.flash("Game Over",10000)
     })
     scene.add(ship)
     ship.position.y = 50
     new TWEEN.Tween(ship.position).to({
         y: 0 
-    },2000).start()
+    },2000).start().onComplete( e => {
+        hud.update_score(tracks.length, tracks[currentTrack])
+    })
+    hud.flash("You are Stuck in the Loop!",2000)
       
 
     const tracks = [];
@@ -103,13 +111,12 @@ function init(){
         track.deactivate()
         currentTrack += 1 
         if( currentTrack >= tracks.length){
-            const el = document.getElementById("flash")
-            el.textContent = "Loop Escaped!"
-            el.style.display = "block"
+            hud.flash("Loop Escaped!",2000)
         }else{
             const nextTrack = tracks[currentTrack];
-            console.log("enabled nexst track",nextTrack)
             setTrack(nextTrack,1500)
+            const remaining = tracks.length - currentTrack
+            hud.flash(`${remaining} Loop${ (remaining > 1)?"s":"" } Left!`,2000)
         }
      })
 
