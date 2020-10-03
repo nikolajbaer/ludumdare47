@@ -9,8 +9,7 @@ function Ship(scene, world) {
     
     this.body = null;
     this.mesh = null;
-
-
+    this.health = 100;
 
     this.setControlScheme = function(controlScheme) {
         document.addEventListener('meshLoaded', evt => {
