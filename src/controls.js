@@ -1,20 +1,21 @@
 export default Controls;
 
 function Controls() {
-    this.scheme_one = function(ship) {  
+    this.schemes = [];
+    this.schemes.push(function(ship) {  
         window.addEventListener("keydown", ev => {
             switch(ev.key) {
                 case 'a':
-                    ship.position.x = -5.5;
+                    ship.mesh.position.x = -5.5;
                     break;
                 case 'd':
-                    ship.position.x = 5.5;
+                    ship.mesh.position.x = 5.5;
                     break;
             }
         });
 
         window.addEventListener("keyup", ev => {
-            ship.position.x = 0;
+            ship.mesh.position.x = 0;
         });
-    };
+    });
 }
