@@ -6,6 +6,7 @@ import Controls from "./controls.js";
 import Track from "./Track.js"
 import Ship from "./Ship.js"
 import SHIP_GLB from "./assets/kenney/craft_speederA.glb";
+import TWEEN from "@tweenjs/tween.js"
 
 function setupLights(scene) {
     var ambient = new THREE.AmbientLight( 0xffffff, 1.0 );
@@ -45,9 +46,9 @@ function init(){
     var clock = new THREE.Clock();
 
    // Load Model
-    var ship = new Ship(SHIP_GLB,0.2);
+    var ship = new Ship(SHIP_GLB,200, 5.5);
     ship.load(world, scene);
-    ship.setControlScheme(new Controls(5.5).schemes[0]);
+    ship.setControlScheme(new Controls().schemes[0]);
     ship.setCamera(camera);
     const health = document.getElementById("healthbar");
     window.addEventListener("damageTaken", e => {
@@ -65,13 +66,19 @@ function init(){
         el.style.display = "block"
     })
     scene.add(ship)
+    ship.position.y = 50
+    new TWEEN.Tween(ship.position).to({
+        y: 0 
+    },2000).start()
+      
 
     const tracks = [];
     var currentTrack = 0;
+    const INNER_TRACK_RADIUS = 100
     for(var i=0; i<5; i++){
-        var track = new Track(100 + 10*i,0.5,18 + 4*i);
+        var track = new Track(INNER_TRACK_RADIUS + 10*i,0.5,18 + 4*i);
         track.generateObstacles(world);
-        track.position.set(0,100,0);
+        track.position.set(0,INNER_TRACK_RADIUS,0);
         if(i > 0){
             track.visible = false;
         }
@@ -79,9 +86,20 @@ function init(){
         scene.add(track)
         tracks.push(track)
     }
+
+    var trackTween = null;
+    function setTrack(track,transition_time){
+        track.visible = true;
+        ship.extent = track.extent;
+        console.log("tweening to track raidus", track.radius, "from ", track.position.y)
+        trackTween = new TWEEN.Tween(track.position).to({
+            y: track.radius
+        },transition_time).start()
+    }
+
     window.addEventListener("trackComplete", ev => {
         const track = ev.detail.track;
-        track.visible = false
+        track.deactivate()
         currentTrack += 1 
         if( currentTrack >= tracks.length){
             const el = document.getElementById("flash")
@@ -90,9 +108,7 @@ function init(){
         }else{
             const nextTrack = tracks[currentTrack];
             console.log("enabled nexst track",nextTrack)
-            nextTrack.visible = true;
-            // TODO Tween
-            nextTrack.position.y = nextTrack.radius
+            setTrack(nextTrack,1500)
         }
      })
 
@@ -104,7 +120,9 @@ function init(){
     controls.minDistance = 10;
     controls.maxDistance = 500;
 
-    function update(delta){
+    function update(delta,time){
+        TWEEN.update(time)
+
         if(ship == null){ return }
 
         tracks.forEach( t => {
@@ -134,10 +152,10 @@ function init(){
         })
     }
 
-    function animate() {
+    function animate(time) {
         requestAnimationFrame( animate );            
         const delta = clock.getDelta();
-        update(delta);
+        update(delta,time);
         renderer.render( scene, camera );
     }
 

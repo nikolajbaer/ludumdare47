@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import * as CANNON from "cannon";
+import TWEEN from "@tweenjs/tween.js";
 
 export default class Track extends THREE.Group {
     constructor( radius, speed, width ){ 
@@ -7,6 +8,7 @@ export default class Track extends THREE.Group {
         this.radius = radius;
         this.speed = speed;
         this.width = width;
+        this.extent = width/2;
         this.active = false; // activated after first "step" of physics engine
         this.axis = new THREE.Vector3(1,0,0) 
         this.collected = 0
@@ -44,6 +46,7 @@ export default class Track extends THREE.Group {
         //this.obj.add(mesh)
         this.coinMaterial = new THREE.MeshLambertMaterial( { color: 0x00ff00 } );
         this.obstacleMaterial = new THREE.MeshLambertMaterial( { color: 0xff00ff } );
+        this.bodies = []
     }
 
     generateObstacles(world){
@@ -77,6 +80,19 @@ export default class Track extends THREE.Group {
         }
     }
 
+    deactivate(){
+        // TODO Tween opacity
+        /*
+        new TWEEN.Tween(this.mesh.material).to({
+            opactiy: 0
+        },250).start().onComplete( e => { this.visible = false; } )
+        */
+        this.visible = false
+        this.bodies.forEach( b => {
+            b.remove = true 
+        })
+    }
+
     spawnCoin(world, pos){
         var geometry = new THREE.SphereGeometry();
         var cube = new THREE.Mesh( geometry, this.coinMaterial );
@@ -90,6 +106,7 @@ export default class Track extends THREE.Group {
         this.required += 1;
         world.addBody( body );
         body.mesh = cube;
+        this.bodies.push(body)
     }
 
 
@@ -106,7 +123,7 @@ export default class Track extends THREE.Group {
         world.addBody( body );
         body.mesh = cube;
         body.free = false;
-     
+        this.bodies.push(body)
     }
 
     spin(delta){
