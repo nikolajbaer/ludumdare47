@@ -1,23 +1,24 @@
 export default Controls;
+import Tween from "./tween";
+
 
 function Controls() {
     this.schemes = [];
     this.schemes.push(function(ship) {  
-        window.addEventListener("keydown", ev => {
+        window.addEventListener("keypress", ev => {
+            
             switch(ev.key) {
                 case 'a':
-                    ship.targetPosition.x = -5.5;
-                    ship.targetDuration.x = 0.5;
+                    ship.tweenX = new Tween(ship.mesh.position.x, -5.5, 0.05);
                     break;
                 case 'd':
-                    ship.targetPosition.x = 5.5;
-                    ship.targetDuration.x = 0.5;
+                    ship.tweenX = new Tween(ship.mesh.position.x, 5.5, 0.05);
                     break;
             }
         });
 
         window.addEventListener("keyup", ev => {
-            ship.targetPosition.x = 0;
+            ship.tweenX = new Tween(ship.mesh.position.x, 0, 0.05);
         });
     });
 }

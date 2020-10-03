@@ -2,12 +2,7 @@ import SHIP_GLB from "./assets/kenney/craft_speederA.glb";
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import * as CANNON from "cannon";
 import * as THREE from "three";
-
-function Tween(start, target, startTime, currentTime, length) {
-    var elapsed = currentTime - startTime;
-    var pct = elapsed / length;
-    return ((target - start) * pct) + start;
- } 
+import Tween from "./tween";
 
 class Ship {
     constructor(scene, world) {
@@ -20,9 +15,7 @@ class Ship {
         this.elapsed = 0;
         this.ready = false;
         // tween to target position
-        this.targetPosition = { x: 0, y: 0, z: 0 };
-        this.targetDuration = { x: 0.5 };
-        this.transitionStarts = {x: 0};
+        this.tweenX = null;        
 
         this.setControlScheme = function (controlScheme) {
             document.addEventListener('meshLoaded', evt => {
@@ -44,7 +37,9 @@ class Ship {
                 return;
             this.elapsed += dt;
 
-            this.mesh.position.x = 0;
+            if (this.tweenX) {
+               this.mesh.position.x = this.tweenX.current;               
+            }
             this.mesh.position.y = Math.sin(this.elapsed / 2) + 1;
         };
 
