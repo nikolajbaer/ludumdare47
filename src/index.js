@@ -2,10 +2,11 @@ import * as THREE from "three";
 import * as CANNON from "cannon";
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { OutlineEffect } from 'three/examples/jsm/effects/OutlineEffect.js';
-
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import SHIP_GLB from "./assets/kenney/craft_speederA.glb";
 import { Mesh } from "three";
+
+import Track from "./Track.js"
 
 function init(){
     var scene = new THREE.Scene();
@@ -13,9 +14,9 @@ function init(){
 
     // Scene Lighting
     scene.fog = new THREE.Fog( 0x000000, 0, 500 );
-    var ambient = new THREE.AmbientLight( 0xeeeeee );
+    var ambient = new THREE.AmbientLight( 0xffffff, 1.0 );
     scene.add( ambient );
-    var light = new THREE.PointLight( 0xffffff, 1, 100 );
+    var light = new THREE.PointLight( 0xffffff, 1, 500 );
     light.position.set( 10, 30, 20 );
     light.castShadow = true;
     scene.add( light );
@@ -26,11 +27,14 @@ function init(){
     renderer.setSize( window.innerWidth, window.innerHeight );
     document.body.appendChild( renderer.domElement );
 
+    var world = new CANNON.World();
+
     var clock = new THREE.Clock()
 
    // Load Model
     var loader = new GLTFLoader();
     var ship = null;
+    var playerBod = null;
     loader.load( SHIP_GLB, function ( glb ) {
         ship = glb.scenes[0].children[0];
         ship.position.set(0,0.5,0);
@@ -42,48 +46,68 @@ function init(){
             }
         } );
 
+        playerBod = new CANNON.Body({
+            mass: 5,
+            position: new CANNON.Vec3(0,0.5,0),
+            shape: new CANNON.Box(new CANNON.Vec3(0.5,3,0.5)),
+            type: CANNON.Body.KINEMATIC,
+            name: 'ship'
+        })
+        playerBod.mesh = ship 
+        playerBod.addEventListener("collide", function(e){
+            console.log("HIT")
+            //body.free = true
+            //body.life = 10
+        })
+        world.add(playerBod)
+        ship.add(camera);
         scene.add( ship );
             
     } );
 
-    const R = 100;
-    //var trackMaterial = new THREE.MeshStandardMaterial({ color: 0xeeeeee })
-    // https://github.com/mrdoob/three.js/blob/master/examples/webgl_shader_lava.html
-    var trackUniforms = {
-        time: { value: 1.0 },
-    };
-    var trackMaterial = new THREE.ShaderMaterial( {
-        uniforms: trackUniforms,
-		fragmentShader: document.getElementById( 'trackFragmentShader' ).textContent,
-		vertexShader: document.getElementById( 'trackVertexShader' ).textContent
-    } );
-    trackMaterial.side = THREE.DoubleSide;
-    var trackGeometry = new THREE.CylinderGeometry(R,R,20,128,32,true);
-    var track = new THREE.Mesh( trackGeometry, trackMaterial);
-    track.rotateZ(Math.PI/2)
-    track.position.set(0,R,0);
+    var track = new Track(100,0.5,18);
+    track.generateObstacles(world);
+    track.position.set(0,track.radius,0);
+    console.log(track)
     scene.add(track)
 
     camera.position.set(0,4,8);
     camera.lookAt(new THREE.Vector3(0,3,-1000));
     //camera.lookAt(new THREE.Vector3(0,0,0));
 
-    /*
     var controls = new OrbitControls( camera, renderer.domElement );
     controls.minDistance = 10;
     controls.maxDistance = 500;
-    */
 
     function updatePhysics(delta){
         if(ship == null){ return }
-        track.rotateY(0.01)
-        //ship.position.y = Math.sin(clock.elapsedTime*4) 
+        track.spin(delta)
+
+        function updatePhysics(delta){
+            world.step(delta);
+            world.bodies.forEach( b => {
+                if(b.mesh != undefined){
+                    if(b.free){
+                        b.mesh.position.copy(b.position)
+                        b.mesh.quaternion.copy(b.quaternion)
+                        b.life -= delta
+                        if(b.life <= 0){                            
+                            world.remove(b)
+                            b.mesh.parent.remove(b.mesh)
+                        }
+                    }else{
+                        b.position.copy(b.mesh.position)
+                        b.quaternion.copy(b.mesh.quaternion)
+                    }
+                }
+            })
+        }
     }
 
     function animate() {
         requestAnimationFrame( animate );            
         const delta = clock.getDelta();
-        trackUniforms[ "time" ].value += 0.2 * delta;
+        track.uniforms[ "time" ].value += 0.2 * delta;
         updatePhysics(delta);
         renderer.render( scene, camera );
     }
