@@ -5,10 +5,10 @@ function Controls() {
         window.addEventListener("keydown", ev => {
             switch(ev.key) {
                 case 'a':
-                    ship.position.x = -5;
+                    ship.position.x = -5.5;
                     break;
                 case 'd':
-                    ship.position.x = 5;
+                    ship.position.x = 5.5;
                     break;
             }
         });
