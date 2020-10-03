@@ -6,6 +6,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import SHIP_GLB from "./assets/kenney/craft_speederA.glb";
 import { Mesh } from "three";
 
+import Controls from "./controls.js";
 import Track from "./Track.js"
 
 function init(){
@@ -67,7 +68,7 @@ function init(){
         world.add(playerBod)
         ship.add(camera);
         scene.add( ship );
-            
+        controls.scheme_one.bind(this)(ship);
     } );
 
     var track = new Track(100,0.5,18);
@@ -87,7 +88,7 @@ function init(){
     function update(delta){
         if(ship == null){ return }
         ship.position.y = 0.25 + ( 0.25 * Math.sin(clock.elapsedTime) )
-        ship.rotateZ((0.001 * Math.sin(clock.elapsedTime)));
+        ship.rotateZ((0.002 * Math.sin(clock.elapsedTime)));
         track.spin(delta)
 
         world.step(delta);
@@ -117,7 +118,10 @@ function init(){
         update(delta);
         renderer.render( scene, camera );
     }
+
+    controls = new Controls();
     animate();
 }
+
 
 init();
