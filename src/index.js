@@ -21,6 +21,11 @@ function init(){
     light.castShadow = true;
     scene.add( light );
 
+    var light = new THREE.PointLight( 'white', 1, 100);
+    light.position.set(0,2,0);
+    light.caseShadow = true;
+    scene.add(light);
+
     var renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFShadowMap;
@@ -79,7 +84,7 @@ function init(){
     controls.minDistance = 10;
     controls.maxDistance = 500;
 
-    function updatePhysics(delta){
+    function update(delta){
         if(ship == null){ return }
         track.spin(delta)
 
