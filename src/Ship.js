@@ -4,7 +4,7 @@ import * as THREE from "three";
 import TWEEN from "@tweenjs/tween.js"
 
 class Ship extends THREE.Object3D {
-    constructor(model,slide_speed,extent) {
+    constructor(model, slide_speed, extent) {
         super();
         this.model = model;
         this.body = null;
@@ -27,7 +27,7 @@ class Ship extends THREE.Object3D {
         });
     }
 
-    tweenTo(x){
+    tweenTo(x) {
         if(this.tweenX != null){ this.tweenX.stop() }
         this.tweenX = new TWEEN.Tween(this.mesh.position).to({
             x:x 
