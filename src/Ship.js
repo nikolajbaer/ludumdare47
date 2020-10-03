@@ -27,13 +27,8 @@ class Ship extends THREE.Object3D {
         });
     }
 
-<<<<<<< HEAD
     tweenTo(x,zrot){
         //if(this.tweenX != null){ this.tweenX.stop() }
-=======
-    tweenTo(x) {
-        if(this.tweenX != null){ this.tweenX.stop() }
->>>>>>> 5fb589d6d0cd552028da3d73b4ff936435a71f5d
         this.tweenX = new TWEEN.Tween(this.mesh.position).to({
             x:x ,
         },this.slide_speed).start();
