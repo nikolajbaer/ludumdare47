@@ -1,6 +1,9 @@
 import * as THREE from 'three';
 
 class Tween {
+    // start is the start value
+    // target is the target value
+    // length is how long you want it to take
     constructor(start, target, length) {
         this.clock = new THREE.Clock();
         this.clock.start();      
