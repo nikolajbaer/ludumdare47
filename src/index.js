@@ -113,7 +113,7 @@ function init(){
         requestAnimationFrame( animate );            
         const delta = clock.getDelta();
         track.uniforms[ "time" ].value += 0.2 * delta;
-        updatePhysics(delta);
+        update(delta);
         renderer.render( scene, camera );
     }
     animate();
