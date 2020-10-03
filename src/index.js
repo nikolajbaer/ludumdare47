@@ -4,7 +4,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { OutlineEffect } from 'three/examples/jsm/effects/OutlineEffect.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import SHIP_GLB from "./assets/kenney/craft_speederA.glb";
-import { Mesh } from "three";
+import { Mesh, Vector3 } from "three";
 
 import Track from "./Track.js"
 
@@ -60,21 +60,28 @@ function init(){
         })
         playerBod.mesh = ship 
         playerBod.addEventListener("collide", function(e){
-            console.log("HIT")
-            //body.free = true
-            //body.life = 10
+            if(track.active){
+                console.log("HIT",e)
+                e.body.free = true
+                e.body.life = 10
+                THREE.SceneUtils.detach(e.body)
+            }
         })
         world.add(playerBod)
         ship.add(camera);
         scene.add( ship );
-            
     } );
 
-    var track = new Track(100,0.5,18);
-    track.generateObstacles(world);
-    track.position.set(0,track.radius,0);
-    console.log(track)
-    scene.add(track)
+    const tracks = [];
+
+    for(var i=0; i<3; i++){
+        var track = new Track(100 + 10*i,0.5,18 + 4*i);
+        track.generateObstacles(world);
+        track.position.set(0,100,0);
+        console.log(track)
+        scene.add(track)
+        tracks.push(track)
+    }
 
     camera.position.set(0,4,8);
     camera.lookAt(new THREE.Vector3(0,3,-1000));
@@ -84,29 +91,38 @@ function init(){
     controls.minDistance = 10;
     controls.maxDistance = 500;
 
+    console.log(world.bodies)
     function update(delta){
         if(ship == null){ return }
-        track.spin(delta)
 
-        function updatePhysics(delta){
-            world.step(delta);
-            world.bodies.forEach( b => {
-                if(b.mesh != undefined){
-                    if(b.free){
-                        b.mesh.position.copy(b.position)
-                        b.mesh.quaternion.copy(b.quaternion)
-                        b.life -= delta
-                        if(b.life <= 0){                            
-                            world.remove(b)
-                            b.mesh.parent.remove(b.mesh)
-                        }
-                    }else{
-                        b.position.copy(b.mesh.position)
-                        b.quaternion.copy(b.mesh.quaternion)
+        tracks.forEach( t => {
+            t.spin(delta)
+        })
+
+        world.step(delta);
+        world.bodies.forEach( b => {
+            if(b.mesh != undefined){
+                if(b.free){
+                    b.mesh.position.copy(b.position)
+                    b.mesh.quaternion.copy(b.quaternion)
+                    b.life -= delta
+                    if(b.life <= 0){                            
+                        world.remove(b)
+                        b.mesh.parent.remove(b.mesh)
                     }
+                }else{
+                    const pos = new THREE.Vector3()
+                    const quat = new THREE.Quaternion()
+                    b.mesh.getWorldPosition(pos)
+                    b.mesh.getWorldQuaternion(quat)
+                    b.position.copy(pos)
+                    b.quaternion.copy(quat)
                 }
-            })
-        }
+            }
+        })
+        tracks.forEach( t=> {
+            t.active = true
+        })
     }
 
     function animate() {
