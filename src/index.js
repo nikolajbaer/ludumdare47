@@ -4,8 +4,10 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { OutlineEffect } from 'three/examples/jsm/effects/OutlineEffect.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import SHIP_GLB from "./assets/kenney/craft_speederA.glb";
+
 import { Mesh, Vector3 } from "three";
 
+import Controls from "./controls.js";
 import Track from "./Track.js"
 
 function init(){
@@ -22,8 +24,8 @@ function init(){
     scene.add( light );
 
     var light = new THREE.PointLight( 'white', 1, 100);
-    light.position.set(0,2,0);
-    light.caseShadow = true;
+    light.position.set(2,3,0);
+    light.castShadow = true;
     scene.add(light);
 
     var renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -64,9 +66,9 @@ function init(){
                 console.log("HIT",e)
                 e.body.free = true
                 e.body.life = 10
-                THREE.SceneUtils.detach(e.body)
             }
         })
+        controls.scheme_one(ship);
         world.add(playerBod)
         ship.add(camera);
         scene.add( ship );
@@ -132,7 +134,10 @@ function init(){
         update(delta);
         renderer.render( scene, camera );
     }
+
+    controls = new Controls();
     animate();
 }
+
 
 init();
