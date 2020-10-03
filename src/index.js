@@ -21,8 +21,8 @@ function init(){
     scene.add( light );
 
     var light = new THREE.PointLight( 'white', 1, 100);
-    light.position.set(0,2,0);
-    light.caseShadow = true;
+    light.position.set(2,3,0);
+    light.castShadow = true;
     scene.add(light);
 
     var renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -56,20 +56,23 @@ function init(){
     const R = 100;
     //var trackMaterial = new THREE.MeshStandardMaterial({ color: 0xeeeeee })
     // https://github.com/mrdoob/three.js/blob/master/examples/webgl_shader_lava.html
-    var trackUniforms = {
-        time: { value: 1.0 },
-    };
+
+    var trackUniforms = THREE.UniformsUtils.clone(THREE.UniformsLib.lights);
+    trackUniforms.time = {value:1.0};
+
     var trackMaterial = new THREE.ShaderMaterial( {
         uniforms: trackUniforms,
+        lights: true,
 		fragmentShader: document.getElementById( 'trackFragmentShader' ).textContent,
 		vertexShader: document.getElementById( 'trackVertexShader' ).textContent
     } );
     trackMaterial.side = THREE.DoubleSide;
     var trackGeometry = new THREE.CylinderGeometry(R,R,20,128,32,true);
     var track = new THREE.Mesh( trackGeometry, trackMaterial);
-    track.rotateZ(Math.PI/2)
-    track.position.set(0,R,0);
-    scene.add(track)
+    track.rotateZ(Math.PI/2);
+    track.position.set(0,R,0); 
+    track.receiveShadow = true;
+    scene.add(track);
 
     camera.position.set(0,4,8);
     camera.lookAt(new THREE.Vector3(0,3,-1000));
@@ -84,7 +87,7 @@ function init(){
     function update(delta){
         if(ship == null){ return }
         track.rotateY(0.01)
-        ship.position.y =1 + ( 0.25 * Math.sin(clock.elapsedTime) )
+        ship.position.y = 0.25 + ( 0.25 * Math.sin(clock.elapsedTime) )
         ship.rotateZ((0.001 * Math.sin(clock.elapsedTime)));
     }
 
