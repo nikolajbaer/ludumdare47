@@ -67,7 +67,7 @@ function init(){
     scene.add(starfield)
 
     // Load Model
-    var ship = new Ship(SHIP_GLB,400, 5.5);
+    var ship = new Ship(SHIP_GLB, 400, 5.5);
     ship.load(world, scene);
     const shipControls = new Controls()
     shipControls.connect(ship);
@@ -79,7 +79,6 @@ function init(){
         ship.explode(3,150,false)
     })
     window.addEventListener("coinCollected", e => {
-        console.log("Collected!", e.detail.value)
         tracks[currentTrack].collect(e.detail.value)
         hud.update_score(tracks.length - currentTrack, tracks[currentTrack])
     })
@@ -106,7 +105,7 @@ function init(){
     var currentTrack = 0;
     const INNER_TRACK_RADIUS = 100
     for(var i=0; i<5; i++){
-        var track = new Track(INNER_TRACK_RADIUS + 10*i,0.5 + (i / 10),18 + 4*i);
+        var track = new Track(INNER_TRACK_RADIUS + 10*i,0.5 + (i / 10), 22);
         track.generateObstacles(world);
         track.position.set(0,INNER_TRACK_RADIUS,0);
         if(i > 0){
@@ -211,7 +210,7 @@ function init(){
         });
     }
 
-    window.addEventListener('coinPickup', ev => {
+    window.addEventListener('coinCollected', ev => {
         console.log(ev.detail.sound);
         var sound = new THREE.Audio(cameraListener);
 
@@ -236,7 +235,6 @@ function init(){
                 return;
             }
         });
-        console.log("cheatstring:", cheatString);
         if (!stillGood) {
             console.log("restting cheat string");
             cheatString = "";
