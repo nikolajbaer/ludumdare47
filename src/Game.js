@@ -112,6 +112,8 @@ export default class Game {
             this.currentTrack += 1 
             if( this.currentTrack >= this.tracks.length){
                 this.hud.flash("Loop Escaped!",10000)
+                const event = new Event("loopEscaped")
+                window.dispatchEvent( event )
                 setTimeout( e=> {
                     this.starfield.warp_speed();
                 },1200)

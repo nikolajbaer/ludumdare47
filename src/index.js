@@ -36,5 +36,22 @@ function main(){
         e.preventDefault(); 
     };
     document.addEventListener("touchmove", preventBehavior, {passive: false});
+
+    if(gtag != undefined){
+        window.addEventListener( 'gameOver', e => {
+            gtag('event', 'page_view', {
+                page_title: 'Game Over',
+                page_location: '/game-over/',
+                send_to: ga_measurement_id
+             });
+        })
+        window.addEventListener( 'loopEscaped', e => {
+            gtag('event', 'page_view', {
+                page_title: 'Loop Escaped',
+                page_location: '/loop-escaped/',
+                send_to: ga_measurement_id
+             });
+        })
+    }
 }
 main();
