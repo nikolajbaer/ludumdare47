@@ -2,6 +2,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import * as CANNON from "cannon";
 import * as THREE from "three";
 import TWEEN from "@tweenjs/tween.js"
+import { SphereGeometry } from 'three';
 
 class Ship extends THREE.Object3D {
     constructor(model, slide_speed, extent) {
@@ -122,6 +123,37 @@ class Ship extends THREE.Object3D {
             })
             window.dispatchEvent( event )
         }
+    }
+
+    explode(n,t,death){
+        // TODO cache these
+        const poof_geom = new THREE.SphereGeometry();
+        const poof_mat = new THREE.MeshLambertMaterial({ color: 0xff00ff, transparent: true, opacity:0.8 });
+        const START_SCALE = 0.1
+        const START_VEL = 3
+        const END_SCALE = 4
+
+        for(var i=0; i<n; i++){
+            const mesh = new THREE.Mesh(poof_geom,poof_mat);
+            mesh.scale.multiplyScalar((Math.random() * 0.5 + 0.5) * START_SCALE)
+            this.mesh.add(mesh)
+            new TWEEN.Tween(mesh.scale).to({
+                x: END_SCALE,
+                y: END_SCALE,
+                z: END_SCALE,
+            }).start()
+            new TWEEN.Tween(mesh.position).to({
+                x: (0.5 - Math.random()) * START_VEL,
+                y: (0.5 - Math.random()) * START_VEL,
+                z: (0.5 - Math.random()) * START_VEL
+            },t).onComplete( e => {
+                this.mesh.remove(mesh)
+                if(death){
+                    this.mesh.visible = false;
+                }
+            }).start()
+        }
+        
     }
 }
 

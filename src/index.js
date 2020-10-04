@@ -76,6 +76,7 @@ function init(){
     window.addEventListener("damageTaken", e => {
         hud.update_health(e.detail.health)
         shipControls.forceFeedback(150);
+        ship.explode(3,150,false)
     })
     window.addEventListener("coinCollected", e => {
         console.log("Collected!", e.detail.value)
@@ -84,6 +85,12 @@ function init(){
     })
     window.addEventListener("gameOver", e => {
         hud.flash("Game Over",10000)
+        // TODO ship explosion
+        ship.recenter()
+        shipControls.disconnect()
+        ship.explode(20,1000,true);
+        shipControls.forceFeedback(1000);
+        tracks[currentTrack].deactivate()
     })
     scene.add(ship)
     ship.position.y = 50

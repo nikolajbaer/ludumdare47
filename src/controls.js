@@ -1,6 +1,7 @@
 export default class Controls {
     constructor(){
         this.gp = null;
+        this.active = false;
     }
 
     forceFeedback(t){
@@ -16,7 +17,7 @@ export default class Controls {
     }
 
     checkAxis(ship) {
-        if(this.gp == null){ return }
+        if(this.gp == null || !this.active){ return }
         
         var gamepads = navigator.getGamepads()
         this.gp = gamepads[0];
@@ -30,8 +31,13 @@ export default class Controls {
         }
     }
 
+    disconnect(){
+        this.active = false;
+    }
+
     connect(ship){  
         window.addEventListener("keydown", ev => {
+            if( !this.active){ return }
             console.log(ev.key) 
             switch(ev.key) {
                 case 'a':
@@ -46,6 +52,7 @@ export default class Controls {
         });
 
         window.addEventListener("touchstart", ev => {
+            if( !this.active){ return }
             const x = ev.targetTouches[0].clientX;
             if( x < window.innerWidth/2){
                 ship.slideLeft()
@@ -74,5 +81,6 @@ export default class Controls {
                 this.gp = null
             }
         });
+        this.active = true;
     }
 }
