@@ -10,6 +10,7 @@ import TWEEN from "@tweenjs/tween.js"
 import './style.css';
 import HUD from "./HUD.js";
 import MAIN_MUSIC from "./assets/sounds/circle-play-music.mp3";
+import Starfield from "./Starfield.js"
 
 const cheatStrings = [
     "idfreecamera",
@@ -60,8 +61,12 @@ function init(){
         document.getElementById("score")
     )
     console.log(hud)
+   
+    const starfield = new Starfield(10000);
+    starfield.renderOrder = 1
+    scene.add(starfield)
 
-   // Load Model
+    // Load Model
     var ship = new Ship(SHIP_GLB,400, 5.5);
     ship.load(world, scene);
     const shipControls = new Controls()
@@ -70,6 +75,7 @@ function init(){
     const health = document.getElementById("healthbar");
     window.addEventListener("damageTaken", e => {
         hud.update_health(e.detail.health)
+        shipControls.forceFeedback(150);
     })
     window.addEventListener("coinCollected", e => {
         console.log("Collected!", e.detail.value)
@@ -119,7 +125,10 @@ function init(){
         track.deactivate()
         currentTrack += 1 
         if( currentTrack >= tracks.length){
-            hud.flash("Loop Escaped!",2000)
+            hud.flash("Loop Escaped!",10000)
+            setTimeout( e=> {
+                starfield.warp_speed();
+            },1200)
         }else{
             const nextTrack = tracks[currentTrack];
             setTrack(nextTrack,1500)
@@ -172,6 +181,7 @@ function init(){
         tracks.forEach( t=> {
             t.active = true
         })
+        starfield.update(delta)
     }
 
     function animate(time) {

@@ -2,7 +2,19 @@ export default class Controls {
     constructor(){
         this.gp = null;
     }
-    
+
+    forceFeedback(t){
+        if(this.gp == null){ return; }
+        if(this.gp.vibrationActuator != undefined){
+            gamepad.vibrationActuator.playEffect("dual-rumble", {
+                startDelay: 0,
+                duration: t,
+                weakMagnitude: 1.0,
+                strongMagnitude: 1.0
+            });    
+        }
+    }
+
     checkAxis(ship) {
         if(this.gp == null){ return }
         
