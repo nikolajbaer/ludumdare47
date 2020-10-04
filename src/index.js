@@ -119,7 +119,7 @@ function init(){
     var trackTween = null;
     function setTrack(track,transition_time){
         track.visible = true;
-        ship.extent = track.extent;
+        //ship.extent = track.extent;
         console.log("tweening to track raidus", track.radius, "from ", track.position.y)
         trackTween = new TWEEN.Tween(track.position).to({
             y: track.radius
