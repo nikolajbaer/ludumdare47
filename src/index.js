@@ -58,7 +58,8 @@ function init(){
    // Load Model
     var ship = new Ship(SHIP_GLB,400, 5.5);
     ship.load(world, scene);
-    ship.setControlScheme(new Controls().schemes[0]);
+    const shipControls = new Controls()
+    shipControls.connect(ship);
     ship.setCamera(camera);
     const health = document.getElementById("healthbar");
     window.addEventListener("damageTaken", e => {
@@ -135,6 +136,10 @@ function init(){
         TWEEN.update(time)
 
         if(ship == null){ return }
+
+        if( shipControls.gp != null){
+            shipControls.checkAxis(ship);
+        }
 
         tracks.forEach( t => {
             t.spin(delta)

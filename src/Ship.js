@@ -14,6 +14,7 @@ class Ship extends THREE.Object3D {
         this.ready = false;
         this.slide_speed = slide_speed
         this.extent = extent // 1/2 width of the track
+        this.lane = 0
 
         // tween to target position
         this.tweenX = null;        
@@ -38,7 +39,7 @@ class Ship extends THREE.Object3D {
     }
 
     slideLeft(){ this.tweenTo( -this.extent, -THREE.MathUtils.degToRad(-25) ) }
-    slideRight(){this.tweenTo( this.extent,  -THREE.MathUtils.degToRad(25) ) }
+    slideRight(){ this.tweenTo( this.extent,  -THREE.MathUtils.degToRad(25) ) }
     recenter(){ this.tweenTo( 0 , 0) }
 
     setCamera(camera) {
