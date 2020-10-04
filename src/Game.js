@@ -14,6 +14,7 @@ export default class Game {
         this.tracks = [];
         this.currentTrack = 0;
         this.destroyed = false
+        this.paused = true;
     }
 
     setupLights(scene) {
@@ -58,6 +59,7 @@ export default class Game {
     initScene(){
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+        
 
         this.setupLights(this.scene);
         this.renderer = this.setupRenderer(this.scene);
@@ -72,6 +74,7 @@ export default class Game {
 
         this.camera.position.set(0,4,8);
         this.camera.lookAt(new THREE.Vector3(0,3,-1000));
+        
     }
 
     initShip(){
@@ -157,6 +160,8 @@ export default class Game {
         this.hud.flash("You are Stuck in the Loop!",2000)
         this.animate()
         this.sounds.playMusic()
+        
+
     }
 
     destroy(){
@@ -184,7 +189,9 @@ export default class Game {
         }
 
         this.tracks.forEach( t => {
-            t.spin(delta)
+            if (!this.paused) {
+                t.spin(delta);
+            }
         })
 
         this.ship.update(delta,this.clock.elapsedTime);

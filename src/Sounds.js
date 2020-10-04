@@ -48,6 +48,12 @@ export default class Sounds {
         }
     }
 
+    stopMusic() {
+        if (this.music.loaded) {
+            this.music.stop();
+        }
+    }
+
     loadEffects(){
         SOUNDS.forEach( sound_def => {
             var sound = new THREE.Audio(this.cameraListener);
