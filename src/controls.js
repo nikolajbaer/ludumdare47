@@ -45,6 +45,20 @@ export default class Controls {
             }
         });
 
+        window.addEventListener("touchstart", ev => {
+            const x = ev.targetTouches[0].clientX;
+            if( x < window.innerWidth/2){
+                ship.slideLeft()
+            }else{
+                ship.slideRight()
+            }
+        })
+
+        window.addEventListener("touchend", ev => {
+            ship.recenter()
+        })
+
+
         window.addEventListener("keyup", ev => {
             ship.recenter();
         });
