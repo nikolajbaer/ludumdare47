@@ -7,10 +7,11 @@ body{
     
 }
 #title {
+    width: 100%;
     color: #efefef;
     font-size: 32pt;
     font-weight: bold;
-    text-align: left;
+    text-align: center;
     padding-top: 50px;
     position: absolute;
 }
