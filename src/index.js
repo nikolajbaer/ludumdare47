@@ -77,7 +77,7 @@ function init(){
     var currentTrack = 0;
     const INNER_TRACK_RADIUS = 100
     for(var i=0; i<5; i++){
-        var track = new Track(INNER_TRACK_RADIUS + 10*i,0.5,18 + 4*i);
+        var track = new Track(INNER_TRACK_RADIUS + 10*i,0.5 + (i / 10),18 + 4*i);
         track.generateObstacles(world);
         track.position.set(0,INNER_TRACK_RADIUS,0);
         if(i > 0){
