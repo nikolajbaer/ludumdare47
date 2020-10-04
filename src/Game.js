@@ -230,4 +230,12 @@ export default class Game {
     getTracksRemaining(){
         return this.tracks.length - this.currentTrack
     }
+
+    handleResize(){
+        this.camera.aspect = window.innerWidth / window.innerHeight;
+        this.camera.updateProjectionMatrix();
+
+		this.renderer.setSize( window.innerWidth, window.innerHeight );
+
+    }
 }

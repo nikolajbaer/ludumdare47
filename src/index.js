@@ -4,12 +4,22 @@ import './style.css';
 import Game from "./Game.js"
 import CheatCodes from "./CheatCodes.js"
 
+var game = null;
+
 function start(){
-    const game = new Game()
+    game = new Game()
     const cheats = new CheatCodes(game)
     game.init()
     document.body.appendChild( game.renderer.domElement )
+
+
     game.startGame()
+}
+
+function onWindowResize(e){
+    if(game != null){
+        game.handleResize()
+    }
 }
 
 function main(){
@@ -18,5 +28,7 @@ function main(){
         document.getElementById("overlay").style.display = "block"
         start()
     })
+
+    window.addEventListener( 'resize', onWindowResize, false );
 }
 main();
