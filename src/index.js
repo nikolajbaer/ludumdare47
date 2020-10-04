@@ -37,7 +37,8 @@ function main(){
     };
     document.addEventListener("touchmove", preventBehavior, {passive: false});
 
-    if(gtag != undefined){
+    if(typeof(gtag) != 'undefined'){
+        console.log("connecting google analytics event handlers with ",ga_measurement_id)
         window.addEventListener( 'gameOver', e => {
             gtag('event', 'page_view', {
                 page_title: 'Game Over',
