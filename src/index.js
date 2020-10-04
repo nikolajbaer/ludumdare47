@@ -11,8 +11,6 @@ function start(){
     const cheats = new CheatCodes(game)
     game.init()
     document.body.appendChild( game.renderer.domElement )
-
-
     game.startGame()
 }
 
@@ -23,12 +21,20 @@ function onWindowResize(e){
 }
 
 function main(){
+    // Start Game Button
     document.getElementById("startGame").addEventListener("click", e =>{
         document.getElementById("title").style.display = "none"
         document.getElementById("overlay").style.display = "block"
         start()
     })
 
+    // track resize events
     window.addEventListener( 'resize', onWindowResize, false );
+
+    // Prevent default touch drag behaviour
+    function preventBehavior(e) {
+        e.preventDefault(); 
+    };
+    document.addEventListener("touchmove", preventBehavior, {passive: false});
 }
 main();
