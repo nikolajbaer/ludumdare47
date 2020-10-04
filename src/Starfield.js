@@ -2,8 +2,9 @@
 import * as THREE from "three";
 
 export default class StarField extends THREE.Object3D {
-    constructor(line_count){
+    constructor(line_count, extents){
         super()
+        this.extents = extents || {x: 400, y: 200, z: 500}
         this.line_count = line_count
         this.geom = new THREE.BufferGeometry();
         this.geom.setAttribute("position", new THREE.BufferAttribute(new Float32Array(6*line_count), 3));
@@ -14,9 +15,9 @@ export default class StarField extends THREE.Object3D {
         this.va = this.vel.array;
 
         for (let line_index= 0; line_index < line_count; line_index++) {
-            var x = Math.random() * 400 - 200;
-            var y = Math.random() * 200 - 100;
-            var z = Math.random() * 500 - 100;
+            var x = Math.random() * this.extents.x - 200;
+            var y = Math.random() * this.extents.y - 100;
+            var z = Math.random() * this.extents.z - 100;
             var xx = x;
             var yy = y;
             var zz = z;

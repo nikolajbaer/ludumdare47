@@ -9,6 +9,7 @@ import PICKUP_SOUND7 from "./assets/sounds/pickup-006.mp3"
 import PICKUP_SOUND8 from "./assets/sounds/pickup-007.mp3"
 import COLLISION_SOUND from "./assets/sounds/circle-collide-glitch.mp3";
 import MAIN_MUSIC from "./assets/sounds/circle-play-music-001.mp3";
+import TITLE_MUSIC from "./assets/sounds/the-circle.mp3";
 
 const SOUNDS = [
     ["pickup1",PICKUP_SOUND1],
@@ -35,6 +36,7 @@ export default class Sounds {
     loadSounds(){
         this.camera.add(this.cameraListener);        
         this.loadMusic()
+        this.loadTitleMusic()
         this.loadEffects()
     }
 
@@ -66,6 +68,31 @@ export default class Sounds {
             });
             this.sounds[sound_def[0]] = sound
         })
+    }
+
+    loadTitleMusic() {
+        this.titleMusic = new THREE.Audio(this.cameraListener);
+        this.titleMusic.loaded = false
+        this.audioLoader.load(TITLE_MUSIC, buffer => {
+            this.titleMusic.setBuffer(buffer);
+            this.titleMusic.setLoop(true);
+            this.titleMusic.setVolume(0.3);
+            this.titleMusic.loaded = true
+        });
+    }
+
+    playTitleMusic(){
+        if(!this.titleMusic.loaded){
+            this.titleMusic.autoplay = true
+        }else{
+            this.titleMusic.play()
+        }
+    }
+
+    stopTitleMusic() {
+        if (this.titleMusic.loaded) {
+            this.titleMusic.stop();
+        }
     }
 
     loadMusic(){
