@@ -33,8 +33,8 @@ export default class Track extends THREE.Group {
         this.collected = 0
         this.required = 0
         this.trackMaterials = [
-            new THREE.MeshLambertMaterial({color: 0x202030, transparent: true}),
-            new THREE.MeshLambertMaterial({color: 0x404060, transparent: true})
+            new THREE.MeshPhysicalMaterial({clearcoat: 1.0, metalness: 0.9, color: 0x202030 }),
+            new THREE.MeshPhysicalMaterial({color: 0x804060, clearcoat: 1.0, metalness: 0.9})
         ];
         this.trackMaterials.forEach( trackMaterial => {
             trackMaterial.side = THREE.DoubleSide;            
@@ -43,7 +43,7 @@ export default class Track extends THREE.Group {
             radius,
             radius,
             width,
-            128,
+            64,
             4,
             true
         );
