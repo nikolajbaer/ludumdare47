@@ -31,13 +31,15 @@ export default class Controls {
     }
 
     connect(ship){  
-        window.addEventListener("keypress", ev => {
-            
+        window.addEventListener("keydown", ev => {
+            console.log(ev.key) 
             switch(ev.key) {
                 case 'a':
+                case 'ArrowLeft':
                     ship.slideLeft();
                     break;
                 case 'd':
+                case 'ArrowRight':
                     ship.slideRight();
                     break;
             }
