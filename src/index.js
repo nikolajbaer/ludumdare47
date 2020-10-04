@@ -11,6 +11,12 @@ import './style.css';
 import HUD from "./HUD.js";
 import MAIN_MUSIC from "./assets/sounds/circle-play-music.mp3";
 
+const cheatStrings = [
+    "idfreecamera",
+    "idkfa",
+    "idspispopd"    
+]
+
 function setupLights(scene) {
     var ambient = new THREE.AmbientLight( 0xffffff, 1.0 );
     scene.add( ambient );
@@ -36,7 +42,7 @@ function setupRenderer(scene) {
 function init(){
     var scene = new THREE.Scene();
     var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-
+    var cheatString = "";
     // Scene Lighting
     scene.fog = new THREE.Fog( 0x000000, 0, 500 );
 
@@ -87,7 +93,7 @@ function init(){
     var currentTrack = 0;
     const INNER_TRACK_RADIUS = 100
     for(var i=0; i<5; i++){
-        var track = new Track(INNER_TRACK_RADIUS + 10*i,0.5,18 + 4*i);
+        var track = new Track(INNER_TRACK_RADIUS + 10*i,0.5 + (i / 10),18 + 4*i);
         track.generateObstacles(world);
         track.position.set(0,INNER_TRACK_RADIUS,0);
         if(i > 0){
@@ -126,12 +132,12 @@ function init(){
     camera.lookAt(new THREE.Vector3(0,3,-1000));
     //camera.lookAt(new THREE.Vector3(0,0,0));
 
-     /*
-    var controls = new OrbitControls( camera, renderer.domElement );
-    controls.minDistance = 10;
-    controls.maxDistance = 500;
-     */
-
+    window.addEventListener("idfreecamera", _e => {
+        var controls = new OrbitControls( camera, renderer.domElement );
+        controls.minDistance = 10;
+        controls.maxDistance = 500;
+    });
+     
     function update(delta,time){
         TWEEN.update(time)
 
@@ -199,6 +205,25 @@ function init(){
             sound.play(); 
         });
 
+    });
+
+    window.addEventListener('keypress', ev => {
+        cheatString += ev.key;
+        var stillGood = false;
+        cheatStrings.forEach(cheat => {
+            if (cheat.indexOf(cheatString) !== -1) {
+                if (cheat == cheatString) {
+                    window.dispatchEvent(new Event(cheat));
+                }
+                stillGood = true;
+                return;
+            }
+        });
+        console.log("cheatstring:", cheatString);
+        if (!stillGood) {
+            console.log("restting cheat string");
+            cheatString = "";
+        }
     });
 
     animate();
