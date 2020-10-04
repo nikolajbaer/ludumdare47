@@ -12,7 +12,7 @@ import HUD from "./HUD.js";
 import MAIN_MUSIC from "./assets/sounds/circle-play-music.mp3";
 import Starfield from "./Starfield.js"
 
-const cheatStrings = [
+const cheatCodes = [
     "idfreecamera",
     "idkfa",
     "idspispopd"    
@@ -152,6 +152,15 @@ function init(){
         controls.minDistance = 10;
         controls.maxDistance = 500;
     });
+
+    window.addEventListener("idspispopd", _e => {
+        window.dispatchEvent(
+            new CustomEvent('trackComplete', 
+                {detail: {track: tracks[currentTrack]}}
+            )
+        );
+
+    });
      
     function update(delta,time){
         TWEEN.update(time)
@@ -226,7 +235,7 @@ function init(){
     window.addEventListener('keypress', ev => {
         cheatString += ev.key;
         var stillGood = false;
-        cheatStrings.forEach(cheat => {
+        cheatCodes.forEach(cheat => {
             if (cheat.indexOf(cheatString) !== -1) {
                 if (cheat == cheatString) {
                     window.dispatchEvent(new Event(cheat));
