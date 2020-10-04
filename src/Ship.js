@@ -3,26 +3,6 @@ import * as CANNON from "cannon";
 import * as THREE from "three";
 import TWEEN from "@tweenjs/tween.js"
 import { SphereGeometry } from 'three';
-import PICKUP_SOUND1 from "./assets/sounds/pickup.mp3"
-import PICKUP_SOUND2 from "./assets/sounds/pickup-001.mp3"
-import PICKUP_SOUND3 from "./assets/sounds/pickup-002.mp3"
-import PICKUP_SOUND4 from "./assets/sounds/pickup-003.mp3"
-import PICKUP_SOUND5 from "./assets/sounds/pickup-004.mp3"
-import PICKUP_SOUND6 from "./assets/sounds/pickup-005.mp3"
-import PICKUP_SOUND7 from "./assets/sounds/pickup-006.mp3"
-import PICKUP_SOUND8 from "./assets/sounds/pickup-007.mp3"
-
-const pickup_sounds = [
-    PICKUP_SOUND1, 
-    PICKUP_SOUND2,
-    PICKUP_SOUND3,
-    PICKUP_SOUND4,
-    PICKUP_SOUND5,
-    PICKUP_SOUND6,
-    PICKUP_SOUND7,
-    PICKUP_SOUND8,
-];
-
 
 class Ship extends THREE.Object3D {
     constructor(model, slide_speed, extent) {
@@ -139,7 +119,6 @@ class Ship extends THREE.Object3D {
             const event = new CustomEvent("coinCollected", {
                 detail: {
                     value: body.value,
-                    sound: pickup_sounds[Math.floor(Math.random() * pickup_sounds.length)]
                 }
             })
             window.dispatchEvent( event )

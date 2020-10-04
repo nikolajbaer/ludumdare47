@@ -1,4 +1,24 @@
-body{ background-color: #000; width: 100%; height: 100%; margin: 0px; padding: 0px; }
+body{ 
+    background-color: #000; 
+    width: 100%; 
+    height: 100%; 
+    margin: 0px; 
+    padding: 0px; 
+    font-family: sans-serif;
+}
+#title {
+    color: #0f0;
+    font-size: 32pt;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 50px;
+}
+#title button {
+    padding: 10px;
+    font-size: 24pt;
+    color: #0f0;
+    background-color: #f0f;
+}
 #overlay {
     z-index: 1000;
     position: absolute;

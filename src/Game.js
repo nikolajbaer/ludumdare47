@@ -6,8 +6,8 @@ import Ship from "./Ship.js"
 import SHIP_GLB from "./assets/kenney/craft_speederA.glb";
 import TWEEN from "@tweenjs/tween.js"
 import HUD from "./HUD.js";
-import MAIN_MUSIC from "./assets/sounds/circle-play-music.mp3";
 import Starfield from "./Starfield.js"
+import Sounds from "./Sounds.js"
 
 export default class Game {
     constructor(){
@@ -101,31 +101,8 @@ export default class Game {
     }
 
     initAudio(){
-        const cameraListener = new THREE.AudioListener();
-        this.camera.add(cameraListener);        
-
-        const audioLoader = new THREE.AudioLoader();
-
-        this.music = new THREE.Audio(cameraListener);
-        audioLoader.load(MAIN_MUSIC, buffer => {
-            this.music.setBuffer(buffer);
-            this.music.setLoop(true);
-            this.music.setVolume(0.3);
-            this.music.play(); 
-        });
-
-        /*
-        this.sounds = {}
-        const soundlist = ['coin']
-        soundlist.forEach( soundName => {
-            this.sounds[soundName] = new THREE.Audio(cameraListener);
-            audioLoader.load(soundName, buffer => {
-                this.sounds[soundName].setBuffer(buffer);
-                this.sounds[soundName].setLoop(false);
-                this.sounds[soundNAme].setVolume(0.6);
-            });
-        })
-        */
+        this.sounds = new Sounds(this.scene,this.camera)
+        this.sounds.loadSounds()
     }
 
     connectEvents(){
@@ -139,9 +116,9 @@ export default class Game {
                     this.starfield.warp_speed();
                 },1200)
             }else{
-                const nextTrack = this.tracks[this.currentTrack];
+                const nextTrack = this.getCurrentTrack()
                 this.setTrack(nextTrack,1500)
-                const remaining = this.tracks.length - this.currentTrack
+                const remaining = this.getTracksRemaining()
                 this.hud.flash(`${remaining} Loop${ (remaining > 1)?"s":"" } Left!`,2000)
             }
         })
@@ -151,8 +128,10 @@ export default class Game {
             this.ship.explode(3,150,false)
         })
         window.addEventListener("coinCollected", e => {
-            this.tracks[this.currentTrack].collect(e.detail.value)
-            this.hud.update_score(this.tracks.length - this.currentTrack, this.tracks[this.currentTrack])
+            this.getCurrentTrack().collect(e.detail.value)
+            this.hud.update_score(this.getTracksRemaining(), this.getCurrentTrack())
+            this.sounds.triggerSound(`pickup${Math.floor(Math.random() * 8) + 1}`)
+
         })
         window.addEventListener("gameOver", e => {
             this.hud.flash("Game Over",10000)
@@ -161,7 +140,7 @@ export default class Game {
             this.shipControls.disconnect()
             this.ship.explode(20,1000,true);
             this.shipControls.forceFeedback(1000);
-            this.tracks[this.currentTrack].deactivate()
+            this.getCurrentTrack().deactivate()
         })
     }
 
@@ -173,11 +152,11 @@ export default class Game {
         new TWEEN.Tween(this.ship.position).to({
             y: 0 
         },2000).start().onComplete( e => {
-            this.hud.update_score(this.tracks.length, this.tracks[this.currentTrack])
+            this.hud.update_score(this.tracks.length, this.getCurrentTrack())
         })
         this.hud.flash("You are Stuck in the Loop!",2000)
         this.animate()
-        this.music.play()
+        this.sounds.playMusic()
     }
 
     destroy(){
@@ -239,5 +218,16 @@ export default class Game {
         const delta = this.clock.getDelta();
         this.update(delta,time);
         this.renderer.render( this.scene, this.camera );
+    }
+
+    getCurrentTrack(){
+        if(this.currentTrack < this.tracks.length){
+            return this.tracks[this.currentTrack]
+        }
+        return null;
+    }
+
+    getTracksRemaining(){
+        return this.tracks.length - this.currentTrack
     }
 }
