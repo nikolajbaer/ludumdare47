@@ -15,7 +15,7 @@ import Starfield from "./Starfield.js"
 const cheatCodes = [
     "idfreecamera",
     "idkfa",
-    "idspispopd"    
+    "idnloop"    
 ]
 
 function setupLights(scene) {
@@ -153,7 +153,7 @@ function init(){
         controls.maxDistance = 500;
     });
 
-    window.addEventListener("idspispopd", _e => {
+    window.addEventListener("idnloop", _e => {
         window.dispatchEvent(
             new CustomEvent('trackComplete', 
                 {detail: {track: tracks[currentTrack]}}
