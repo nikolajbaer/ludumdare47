@@ -41,8 +41,6 @@ class Particle extends THREE.Object3D {
         this.geo = new THREE.BoxGeometry(0.1,0.1,0.2);
         this.mat = new THREE.MeshLambertMaterial({ color: COLORS[Math.floor(Math.random() * COLORS.length)]});
         this.mat.transparent = true;
-        this.light = new THREE.PointLight('yellow', 100, 10, 2);
-        this.add(this.light);
         this.mesh = new THREE.Mesh(this.geo, this.mat);
         this.mesh.castShadow = true;
         this.mesh.receiveShadow = true;
@@ -137,7 +135,7 @@ class Ship extends THREE.Object3D {
         this.elapsed = elapsed;
         this.mesh.position.y = (Math.sin(this.elapsed * 2 + 5.2) + Math.sin(this.elapsed) + Math.sin(this.elapsed * 2.9 + 0.34) + Math.sin(this.elapsed * 4.6 + 9.3) ) / 4 / 2 + 0.5;
 
-        if (this.particles.length < this.particleCount) {
+        if (this.health > 0 && this.particles.length < this.particleCount) {
             var p = new Particle({x: this.mesh.position.x + Math.random()/10, y:this.mesh.position.y + 0.25});
             this.particles.push(p);
             this.add(p.mesh);
