@@ -33,8 +33,8 @@ export default class Track extends THREE.Group {
         this.collected = 0
         this.required = 0
         this.trackMaterials = [
-            new THREE.MeshLambertMaterial({color: 0x202030}),
-            new THREE.MeshLambertMaterial({color: 0x404060})
+            new THREE.MeshLambertMaterial({color: 0x202030, transparent: true}),
+            new THREE.MeshLambertMaterial({color: 0x404060, transparent: true})
         ];
         this.trackMaterials.forEach( trackMaterial => {
             trackMaterial.side = THREE.DoubleSide;            
@@ -64,7 +64,7 @@ export default class Track extends THREE.Group {
         //this.obj = new THREE.()
         //this.obj.add(mesh)
         this.coinMaterial = new THREE.MeshLambertMaterial( { color: 0x00ff00 } );
-        this.obstacleMaterial = new THREE.MeshLambertMaterial( { color: 0xff00ff } );
+        this.obstacleMaterial = new THREE.MeshLambertMaterial( { color: 0xff00ff } ); 
         this.bodies = []
     }
 
@@ -114,12 +114,16 @@ export default class Track extends THREE.Group {
 
     deactivate(){
         // TODO Tween opacity
-        /*
-        new TWEEN.Tween(this.mesh.material).to({
-            opactiy: 0
-        },250).start().onComplete( e => { this.visible = false; } )
-        */
-        this.visible = false
+        new TWEEN.Tween(this.rotation).to({
+            z: Math.PI/2
+        },3000).start().onComplete( e => { this.visible = false; } )
+        new TWEEN.Tween(this.trackMaterials[0]).to({
+            opacity: 0 
+        },3000).start()
+        new TWEEN.Tween(this.trackMaterials[1]).to({
+            opacity: 0 
+        },3000).start()
+        //this.visible = false
         this.bodies.forEach( b => {
             b.remove = true 
         })

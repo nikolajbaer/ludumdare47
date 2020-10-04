@@ -27,16 +27,19 @@ class Ship extends THREE.Object3D {
         });
     }
 
-    tweenTo(x) {
-        if(this.tweenX != null){ this.tweenX.stop() }
+    tweenTo(x,zrot){
+        //if(this.tweenX != null){ this.tweenX.stop() }
         this.tweenX = new TWEEN.Tween(this.mesh.position).to({
-            x:x 
+            x:x ,
+        },this.slide_speed).start();
+        new TWEEN.Tween(this.mesh.rotation).to({
+            z: zrot,
         },this.slide_speed).start();
     }
 
-    slideLeft(){ this.tweenTo( -this.extent ) }
-    slideRight(){this.tweenTo( this.extent ) }
-    recenter(){ this.tweenTo( 0 ) }
+    slideLeft(){ this.tweenTo( -this.extent, -THREE.MathUtils.degToRad(-25) ) }
+    slideRight(){this.tweenTo( this.extent,  -THREE.MathUtils.degToRad(25) ) }
+    recenter(){ this.tweenTo( 0 , 0) }
 
     setCamera(camera) {
         document.addEventListener('meshLoaded', evt => {

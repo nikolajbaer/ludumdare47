@@ -7,6 +7,8 @@ import Track from "./Track.js"
 import Ship from "./Ship.js"
 import SHIP_GLB from "./assets/kenney/craft_speederA.glb";
 import TWEEN from "@tweenjs/tween.js"
+import './style.css';
+import HUD from "./HUD.js";
 import MAIN_MUSIC from "./assets/sounds/circle-play-music.mp3";
 
 function setupLights(scene) {
@@ -46,31 +48,38 @@ function init(){
 
     var clock = new THREE.Clock();
 
+    const hud = new HUD(
+        document.getElementById("healthbar"),
+        document.getElementById("flash"),
+        document.getElementById("score")
+    )
+    console.log(hud)
+
    // Load Model
-    var ship = new Ship(SHIP_GLB,200, 5.5);
+    var ship = new Ship(SHIP_GLB,400, 5.5);
     ship.load(world, scene);
     ship.setControlScheme(new Controls().schemes[0]);
     ship.setCamera(camera);
     const health = document.getElementById("healthbar");
     window.addEventListener("damageTaken", e => {
-        console.log("Damaged!", e)
-        health.textContent = `${e.detail.health.toFixed(0)}%`
-        health.style.width = `${e.detail.health.toFixed(0)}%`
+        hud.update_health(e.detail.health)
     })
     window.addEventListener("coinCollected", e => {
         console.log("Collected!", e.detail.value)
         tracks[currentTrack].collect(e.detail.value)
+        hud.update_score(tracks.length - currentTrack, tracks[currentTrack])
     })
     window.addEventListener("gameOver", e => {
-        const el = document.getElementById("flash")
-        el.textContent = "Game Over"
-        el.style.display = "block"
+        hud.flash("Game Over",10000)
     })
     scene.add(ship)
     ship.position.y = 50
     new TWEEN.Tween(ship.position).to({
         y: 0 
-    },2000).start()
+    },2000).start().onComplete( e => {
+        hud.update_score(tracks.length, tracks[currentTrack])
+    })
+    hud.flash("You are Stuck in the Loop!",2000)
       
 
     const tracks = [];
@@ -103,13 +112,12 @@ function init(){
         track.deactivate()
         currentTrack += 1 
         if( currentTrack >= tracks.length){
-            const el = document.getElementById("flash")
-            el.textContent = "Loop Escaped!"
-            el.style.display = "block"
+            hud.flash("Loop Escaped!",2000)
         }else{
             const nextTrack = tracks[currentTrack];
-            console.log("enabled nexst track",nextTrack)
             setTrack(nextTrack,1500)
+            const remaining = tracks.length - currentTrack
+            hud.flash(`${remaining} Loop${ (remaining > 1)?"s":"" } Left!`,2000)
         }
      })
 
@@ -117,9 +125,11 @@ function init(){
     camera.lookAt(new THREE.Vector3(0,3,-1000));
     //camera.lookAt(new THREE.Vector3(0,0,0));
 
-    //var controls = new OrbitControls( camera, renderer.domElement );
-    //controls.minDistance = 10;
-    //controls.maxDistance = 500;
+     /*
+    var controls = new OrbitControls( camera, renderer.domElement );
+    controls.minDistance = 10;
+    controls.maxDistance = 500;
+     */
 
     function update(delta,time){
         TWEEN.update(time)
