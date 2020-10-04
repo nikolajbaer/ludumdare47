@@ -191,7 +191,12 @@ class Ship extends THREE.Object3D {
             this.health -= damage
         }
         if(this.health <= 0){
-            const event = new Event("gameOver")
+            const event = new CustomEvent("gameOver",{
+                detail: {
+                    damage: damage,
+                    health: this.health,
+                }
+            })
             window.dispatchEvent( event )
         }else{
             const event = new CustomEvent("damageTaken",{

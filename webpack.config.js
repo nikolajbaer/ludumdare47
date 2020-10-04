@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require('webpack');
 
 module.exports = { 
   entry: './src/index.js', 
@@ -52,7 +53,11 @@ module.exports = {
       filename: 'index.html',
       title: 'Output Management',
       template: 'src/index.html',
+      analytics_gtag: process.env.ANALYTICS_GTAG,
       inject: true,
+    }),
+    new webpack.DefinePlugin({
+      'process.env.ANALYTICS_GTAG': JSON.stringify(process.env.ANALYTICS_GTAG),
     }),
   ],
   devServer: {

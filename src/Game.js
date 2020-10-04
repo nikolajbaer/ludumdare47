@@ -115,6 +115,8 @@ export default class Game {
             this.currentTrack += 1 
             if( this.currentTrack >= this.tracks.length){
                 this.hud.flash("Loop Escaped!",10000)
+                const event = new Event("loopEscaped")
+                window.dispatchEvent( event )
                 setTimeout( e=> {
                     this.starfield.warp_speed();
                 },1200)
@@ -137,6 +139,7 @@ export default class Game {
 
         })
         window.addEventListener("gameOver", e => {
+            this.hud.update_health(e.detail.health)
             this.hud.flash("Game Over",10000)
             // TODO ship explosion
             this.ship.recenter()

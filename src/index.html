@@ -10,31 +10,21 @@
 	</style>
 </head>
 <body>
-	<div id="title">
-	    <h1>ULTRA L∞P</h1>	
-	    <div>
-	        <button id="startGame">START</button>
-	    </div>
-	</div>
-	<div id="overlay">
-		<div id="flash"></div>
+	<%= require('html-loader!./title.html') %>
+	<%= require('html-loader!./overlay.html') %>
 
-		<div class="hud">
-			<div id="health"><div id="healthbar">100%</div></div>
-			<div id="score">
-				Collect Green Tokens To Escape The Space Loop!
-			</div>
-		</div>
-	</div>
+	<% if(htmlWebpackPlugin.options.analytics_gtag){ %>
 	<!-- Global site tag (gtag.js) - Google Analytics -->
-	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-797423-3"></script>
+	<script async src="https://www.googletagmanager.com/gtag/js?id=<%= htmlWebpackPlugin.options.analytics_gtag %>"></script>
 	<script>
 	  window.dataLayer = window.dataLayer || [];
 	  function gtag(){dataLayer.push(arguments);}
 	  gtag('js', new Date());
-		// todo make this part of webpack env
-	  gtag('config', 'UA-797423-3');
+		// todo make this part of webpack env		 
+      var ga_measurement_id = '<%= htmlWebpackPlugin.options.analytics_gtag %>'
+	  gtag('config', ga_measurement_id );
 	</script>
+	<% } %>
 
 </body>
 </html>
