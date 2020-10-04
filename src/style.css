@@ -11,7 +11,7 @@ body{
     font-size: 32pt;
     font-weight: bold;
     text-align: center;
-    margin-top: 50px;
+    padding-top: 50px;
 }
 #title button {
     padding: 20px;

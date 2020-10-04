@@ -134,6 +134,7 @@ export default class Game {
 
         })
         window.addEventListener("gameOver", e => {
+            this.hud.update_health(e.detail.health)
             this.hud.flash("Game Over",10000)
             // TODO ship explosion
             this.ship.recenter()
