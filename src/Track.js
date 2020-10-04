@@ -125,7 +125,7 @@ export default class Track extends THREE.Group {
             mass: 50,
             shape: new CANNON.Sphere(0.5),
         });
-        body.damage = 10;
+        body.damage = 33 + Math.random();
         world.addBody( body );
         body.mesh = cube;
         body.free = false;

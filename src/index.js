@@ -67,7 +67,7 @@ function init(){
     scene.add(starfield)
 
     // Load Model
-    var ship = new Ship(SHIP_GLB, 400, 5.5);
+    var ship = new Ship(SHIP_GLB, 250, 5.5);
     ship.load(world, scene);
     const shipControls = new Controls()
     shipControls.connect(ship);
