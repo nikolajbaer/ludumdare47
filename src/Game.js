@@ -14,7 +14,7 @@ export default class Game {
         this.tracks = [];
         this.currentTrack = 0;
         this.destroyed = false
-        this.paused = true;
+        this.paused = false;
     }
 
     setupLights(scene) {
@@ -131,6 +131,8 @@ export default class Game {
             this.hud.update_health(e.detail.health)
             this.shipControls.forceFeedback(150);
             this.ship.explode(3,150,false)
+            this.sounds.triggerSound('collide1');
+            this.getCurrentTrack().handleCrash();
         })
         window.addEventListener("coinCollected", e => {
             this.getCurrentTrack().collect(e.detail.value)

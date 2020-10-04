@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import * as CANNON from "cannon";
-import TWEEN from "@tweenjs/tween.js";
+import TWEEN, { Tween } from "@tweenjs/tween.js";
 
 export default class Track extends THREE.Group {
     constructor( radius, speed, width ){ 
@@ -24,7 +24,7 @@ export default class Track extends THREE.Group {
             radius,
             radius,
             width,
-            64,
+            128,
             4,
             true
         );
@@ -130,6 +130,13 @@ export default class Track extends THREE.Group {
         body.mesh = cube;
         body.free = false;
         this.bodies.push(body)
+    }
+
+    handleCrash() {
+        var oldspeed = this.speed;
+        var stopCar = new TWEEN.Tween(this).to({speed: -this.speed/2}, 250).easing(TWEEN.Easing.Quadratic.Out);
+        stopCar.chain(new TWEEN.Tween(this).to({speed: oldspeed}, 1000));
+        stopCar.start();
     }
 
     spin(delta){
