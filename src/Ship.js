@@ -29,11 +29,12 @@ const COLORS = [
     'yellow', 'orange'
 ]
 const particle_geom = new THREE.BoxGeometry(0.1,0.1,0.2)
-const particle_mat = new THREE.MeshLambertMaterial({ color: COLORS[Math.floor(Math.random() * COLORS.length)]})
 
 class Particle extends THREE.Object3D {
     constructor(startingPosition) {
         super();
+        this.particle_mat = new THREE.MeshLambertMaterial({ color: COLORS[Math.floor(Math.random() * COLORS.length)]})
+
         this.clock = new THREE.Clock();
         this.clock.start();
         this.ttl = 0.25;
@@ -42,7 +43,7 @@ class Particle extends THREE.Object3D {
         this.startY = startingPosition.y;
         this.startZ = 0.9;
         this.geo = particle_geom;
-        this.mat = particle_mat;
+        this.mat = this.particle_mat;
         this.mat.transparent = true;
         this.mesh = new THREE.Mesh(this.geo, this.mat);
         this.mesh.castShadow = true;
