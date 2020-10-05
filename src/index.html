@@ -5,13 +5,15 @@
      content='width=device-width, initial-scale=1.0, maximum-scale=1.0, 
      user-scalable=0' > 
 	<style>
-		body{ background-color: black; color: black;}
+		body{ background-color: black; color: black; }
 		#overlay { display: none; }
+		#gameover { display: none; }
 	</style>
 </head>
 <body>
 	<%= require('html-loader!./title.html') %>
 	<%= require('html-loader!./overlay.html') %>
+	<%= require('html-loader!./gameover.html') %>
 
 	<% if(htmlWebpackPlugin.options.analytics_gtag){ %>
 	<!-- Global site tag (gtag.js) - Google Analytics -->

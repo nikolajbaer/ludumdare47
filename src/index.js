@@ -28,6 +28,16 @@ function main(){
         start()
     })
 
+    // End GameEvent
+    window.addEventListener( 'gameOver', e => {
+        document.getElementById("gameOver").style.display = "block"
+        document.getElementById("newGame").addEventListener("click", e=> {
+            game.destroy() 
+            start()
+        })
+
+    })
+
     // track resize events
     window.addEventListener( 'resize', onWindowResize, false );
 

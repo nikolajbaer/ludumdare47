@@ -56,9 +56,6 @@ module.exports = {
       analytics_gtag: process.env.ANALYTICS_GTAG,
       inject: true,
     }),
-    new webpack.DefinePlugin({
-      'process.env.ANALYTICS_GTAG': JSON.stringify(process.env.ANALYTICS_GTAG),
-    }),
   ],
   devServer: {
     contentBase: path.join(__dirname, 'dist'),

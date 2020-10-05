@@ -164,7 +164,7 @@ export default class Game {
 
     destroy(){
         // cleanup
-        this.music.stop()
+        this.sounds.stopMusic()
         this.disconnectEvents()
         this.destroyed = true
     }

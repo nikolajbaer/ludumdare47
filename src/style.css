@@ -12,6 +12,7 @@ body{
     font-weight: bold;
     text-align: center;
     padding-top: 50px;
+    display: block; /* TODO add fadein */
 }
 #title button {
     padding: 20px;
