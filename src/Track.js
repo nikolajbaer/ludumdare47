@@ -1,9 +1,17 @@
 import * as THREE from "three";
 import * as CANNON from "cannon";
 import TWEEN, { Tween } from "@tweenjs/tween.js";
+const colorPairs = [
+    [0x804060, 0x202030],
+    [0x408060, 0x203020],
+    [0x406080, 0x302020],
+    [0x603030, 0x302020],
+    [0x603060, 0x100010],
+    [0x606030, 0x101000],
+];
 
 export default class Track extends THREE.Group {
-    constructor( radius, speed, width ){ 
+    constructor( radius, speed, width, idx ){ 
         super();
         this.radius = radius;
         this.speed = speed;
@@ -13,9 +21,12 @@ export default class Track extends THREE.Group {
         this.axis = new THREE.Vector3(1,0,0) 
         this.collected = 0
         this.required = 0
+        this.allRotations = false;
+        this.colorPair = colorPairs[idx]
+        this.bodyMeshes = [];
         this.trackMaterials = [
-            new THREE.MeshPhysicalMaterial({clearcoat: 1.0, metalness: 0.9, color: 0x202030 }),
-            new THREE.MeshPhysicalMaterial({color: 0x804060, clearcoat: 1.0, metalness: 0.9})
+            new THREE.MeshPhysicalMaterial({clearcoat: 1.0, metalness: 0.9, color: this.colorPair[0] }),
+            new THREE.MeshPhysicalMaterial({color: this.colorPair[1], clearcoat: 1.0, metalness: 0.9})
         ];
         this.trackMaterials.forEach( trackMaterial => {
             trackMaterial.side = THREE.DoubleSide;            
@@ -47,7 +58,7 @@ export default class Track extends THREE.Group {
         this.coinMaterial = new THREE.MeshLambertMaterial( { color: 0x00ff00 } );
         this.obstacleMaterial = new THREE.MeshLambertMaterial( { color: 0xff00ff } ); 
         this.coin_geometry = new THREE.ConeBufferGeometry();
-        this.obstacle_geometry = new THREE.SphereGeometry();
+        this.obstacle_geometry = new THREE.BoxGeometry();
         this.bodies = []
     }
 
@@ -112,6 +123,7 @@ export default class Track extends THREE.Group {
         body.value = 5; //maybe double value coins some point?
         this.required += 1;
         world.addBody( body );
+        this.bodyMeshes.push(cube)
         body.mesh = cube;
         this.bodies.push(body)
     }
@@ -129,6 +141,7 @@ export default class Track extends THREE.Group {
         world.addBody( body );
         body.mesh = cube;
         body.free = false;
+        this.bodyMeshes.push(cube)
         this.bodies.push(body)
     }
 
@@ -140,6 +153,15 @@ export default class Track extends THREE.Group {
     }
 
     spin(delta){
+        if(this.allRotations) {
+            this.rotateZ(-this.speed*0.25*delta)
+            this.rotateY(this.speed*delta);
+        }
+        if (this.bodyMeshes) {
+            this.bodyMeshes.forEach(b => {
+                b.rotateZ( Math.random() * 10 * delta);
+            });
+        }
         this.rotateX(-this.speed*delta)
     }
 }
