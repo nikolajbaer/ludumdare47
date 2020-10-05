@@ -46,6 +46,8 @@ export default class Track extends THREE.Group {
         //this.obj.add(mesh)
         this.coinMaterial = new THREE.MeshLambertMaterial( { color: 0x00ff00 } );
         this.obstacleMaterial = new THREE.MeshLambertMaterial( { color: 0xff00ff } ); 
+        this.coin_geometry = new THREE.ConeBufferGeometry();
+        this.obstacle_geometry = new THREE.SphereGeometry();
         this.bodies = []
     }
 
@@ -100,8 +102,7 @@ export default class Track extends THREE.Group {
     }
 
     spawnCoin(world, pos){
-        var geometry = new THREE.ConeBufferGeometry();
-        var cube = new THREE.Mesh( geometry, this.coinMaterial );
+        var cube = new THREE.Mesh( this.coin_geometry, this.coinMaterial );
         cube.position.set(pos.x,pos.y,pos.z)
         this.add( cube )
         var body = new CANNON.Body({
@@ -117,8 +118,7 @@ export default class Track extends THREE.Group {
 
 
     spawnObstacle(world, pos){
-        var geometry = new THREE.SphereGeometry();
-        var cube = new THREE.Mesh( geometry, this.obstacleMaterial );
+        var cube = new THREE.Mesh( this.obstacle_geometry, this.obstacleMaterial );
         cube.position.set(pos.x,pos.y,pos.z)
         this.add(cube);
         var body = new CANNON.Body({

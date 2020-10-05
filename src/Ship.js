@@ -25,11 +25,14 @@ function addhashes(v1, v2) {
     return v3;
 }
 
+const COLORS = [
+    'yellow', 'orange'
+]
+const particle_geom = new THREE.BoxGeometry(0.1,0.1,0.2)
+const particle_mat = new THREE.MeshLambertMaterial({ color: COLORS[Math.floor(Math.random() * COLORS.length)]})
+
 class Particle extends THREE.Object3D {
     constructor(startingPosition) {
-        const COLORS = [
-            'yellow', 'orange'
-        ]
         super();
         this.clock = new THREE.Clock();
         this.clock.start();
@@ -38,8 +41,8 @@ class Particle extends THREE.Object3D {
         this.startX = (Math.random() < 0.5 ? 0.29 : -0.35) + startingPosition.x;
         this.startY = startingPosition.y;
         this.startZ = 0.9;
-        this.geo = new THREE.BoxGeometry(0.1,0.1,0.2);
-        this.mat = new THREE.MeshLambertMaterial({ color: COLORS[Math.floor(Math.random() * COLORS.length)]});
+        this.geo = particle_geom;
+        this.mat = particle_mat;
         this.mat.transparent = true;
         this.mesh = new THREE.Mesh(this.geo, this.mat);
         this.mesh.castShadow = true;
@@ -93,6 +96,9 @@ class Ship extends THREE.Object3D {
         // tween to target position
         this.tweenX = null;        
         this.health = 100;
+
+        this.poof_geom = new THREE.SphereGeometry();
+        this.poof_mat = new THREE.MeshLambertMaterial({ color: 0xff00ff, transparent: true, opacity:0.8 });
     }
 
     particleReport() {
@@ -229,14 +235,12 @@ class Ship extends THREE.Object3D {
 
     explode(n,t,death){
         // TODO cache these
-        const poof_geom = new THREE.SphereGeometry();
-        const poof_mat = new THREE.MeshLambertMaterial({ color: 0xff00ff, transparent: true, opacity:0.8 });
         const START_SCALE = 0.1
         const START_VEL = 3
         const END_SCALE = 4
 
         for(var i=0; i<n; i++){
-            const mesh = new THREE.Mesh(poof_geom,poof_mat);
+            const mesh = new THREE.Mesh(this.poof_geom,this.poof_mat);
             mesh.scale.multiplyScalar((Math.random() * 0.5 + 0.5) * START_SCALE)
             this.mesh.add(mesh)
             new TWEEN.Tween(mesh.scale).to({
