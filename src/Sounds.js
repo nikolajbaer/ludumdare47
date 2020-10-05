@@ -33,7 +33,7 @@ export default class Sounds {
     }
 
     loadSounds(){
-        this.camera.add(this.cameraListener);        
+        this.camera.add(this.cameraListener); 
         this.loadMusic()
         this.loadEffects()
     }

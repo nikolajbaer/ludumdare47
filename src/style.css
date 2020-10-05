@@ -6,15 +6,19 @@ body{
     padding: 0px; 
     font-family: sans-serif;
 }
-#title {
+.title {
+    position: absolute;
+    width: 100%;
+    top: 0px;
     color: #0f0;
     font-size: 32pt;
     font-weight: bold;
     text-align: center;
     padding-top: 50px;
     display: block; /* TODO add fadein */
+    background-color: transparent;
 }
-#title button {
+.title button {
     padding: 20px;
     font-size: 24pt;
     color: #0f0;
@@ -49,10 +53,16 @@ body{
 }
 #health {
     height: 15px;
-    width: 500px;
     margin: auto;
     border: 1px solid #0f0;
 }
+@media only screen and (max-width: 600px) {
+    #health { width: 300px; }
+}
+@media only screen and (min-width: 600px) {
+    #health { width: 500px; }
+}
+
 #healthbar {
     width: 100%;
     height: 100%;
@@ -78,3 +88,19 @@ body{
     font-weight: bold;
 }
 
+.title .instructions {
+    font-size: 12pt;
+}
+#credits {
+    font-size: 10pt;
+    padding-top: 100px;
+    line-height: 1.5em;
+}
+
+#credits a {
+    color: #0f0;
+}
+#credits button {
+    padding: 10px;
+    font-size: 12pt;
+}

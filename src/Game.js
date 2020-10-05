@@ -142,11 +142,12 @@ export default class Game {
         })
         window.addEventListener("gameOver", e => {
             this.hud.update_health(e.detail.health)
-            this.hud.flash("Game Over",10000)
+
             // TODO ship explosion
             this.ship.recenter()
             this.shipControls.disconnect()
             this.ship.explode(20,1000,true);
+            this.sounds.triggerSound('collide1');
             this.shipControls.forceFeedback(1000);
             this.getCurrentTrack().deactivate()
         })
@@ -174,6 +175,7 @@ export default class Game {
         this.sounds.stopMusic()
         this.disconnectEvents()
         this.destroyed = true
+        document.body.removeChild(this.renderer.domElement)
     }
 
     setTrack(track,transition_time){

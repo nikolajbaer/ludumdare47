@@ -8,12 +8,15 @@
 		body{ background-color: black; color: black; }
 		#overlay { display: none; }
 		#gameover { display: none; }
+		#credits { display: none; }
+		#title { display: block; }
 	</style>
 </head>
 <body>
 	<%= require('html-loader!./title.html') %>
 	<%= require('html-loader!./overlay.html') %>
 	<%= require('html-loader!./gameover.html') %>
+	<%= require('html-loader!./credits.html') %>
 
 	<% if(htmlWebpackPlugin.options.analytics_gtag){ %>
 	<!-- Global site tag (gtag.js) - Google Analytics -->

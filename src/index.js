@@ -27,7 +27,6 @@ function main(){
     document.getElementById("startGame").addEventListener("click", e =>{
         document.getElementById("title").style.display = "none"
         document.getElementById("overlay").style.display = "block"
-<<<<<<< HEAD
         start()
     })
 
@@ -35,16 +34,23 @@ function main(){
     window.addEventListener( 'gameOver', e => {
         document.getElementById("gameOver").style.display = "block"
         document.getElementById("newGame").addEventListener("click", e=> {
-            game.destroy() 
-            start()
+            location.reload()
         })
-
+        track_pageview("/game-over/","Game Over")
     })
 
-=======
-        start();
-    });
->>>>>>> 7e5f906cf6550d4216b0b405b75d7fd32dae49ac
+    // win GameEvent
+    window.addEventListener( 'loopEscaped', e => {
+        setTimeout( e=> {
+            document.getElementById("credits").style.display = "block"
+            document.getElementById("overlay").style.display = "none"
+            document.getElementById("newGame").addEventListener("click", e=> {
+                location.reload()
+            })
+        },5000)
+        track_pageview("/loop-escaped/","Loop Escaped")
+    })
+
     // track resize events
     window.addEventListener( 'resize', onWindowResize, false );
 
@@ -54,22 +60,15 @@ function main(){
     };    
     document.addEventListener("touchmove", preventBehavior, {passive: false});
 
+}
+
+function track_pageview(page,title){
     if(typeof(gtag) != 'undefined'){
-        console.log("connecting google analytics event handlers with ",ga_measurement_id)
-        window.addEventListener( 'gameOver', e => {
-            gtag('event', 'page_view', {
-                page_title: 'Game Over',
-                page_location: '/game-over/',
-                send_to: ga_measurement_id
-             });
-        })
-        window.addEventListener( 'loopEscaped', e => {
-            gtag('event', 'page_view', {
-                page_title: 'Loop Escaped',
-                page_location: '/loop-escaped/',
-                send_to: ga_measurement_id
-             });
-        })
+        gtag('event', 'page_view', {
+            page_title: title,
+            page_location: page,
+            send_to: ga_measurement_id
+            });
     }
 }
 main();
