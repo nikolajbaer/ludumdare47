@@ -58,7 +58,7 @@ export default class CheatCodes {
                 }
             });
             if (!stillGood) {
-                console.log("restting cheat string");
+                //console.log("restting cheat string");
                 this.cheatString = "";
             }
         });

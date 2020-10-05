@@ -38,7 +38,6 @@ export default class Controls {
     connect(ship){  
         window.addEventListener("keydown", ev => {
             if( !this.active){ return }
-            console.log(ev.key) 
             switch(ev.key) {
                 case 'a':
                 case 'ArrowLeft':

@@ -28,6 +28,33 @@ function main(){
     // Start Game Button
     var g = null;
     var interval = null;
+
+    g = new Game();
+    g.initScene();
+    g.starfield = new StarField(10000, {x: 1000, y: 1000, z: 1000});
+    g.starfield.renderOrder = 1
+    g.scene.add(g.starfield)
+    
+    g.initTracks(5);
+    g.initAudio();
+    g.initShip();
+    g.sounds.playTitleMusic();
+    g.animate();
+
+    interval = window.setInterval(function() {
+        if (g.camera.position.x < 400)
+            g.camera.position.x += 0.10;
+        if (g.camera.position.y < 100) 
+            g.camera.position.y += 0.025;
+        g.camera.lookAt(0,0,0);
+    }, 10)
+
+    
+    window.g = g;
+    document.body.appendChild(g.renderer.domElement);
+    
+    console.log(g);
+
     document.getElementById("startGame").addEventListener("click", e =>{
         g.sounds.stopTitleMusic();
         document.body.removeChild(g.renderer.domElement);
@@ -79,30 +106,6 @@ function track_pageview(page,title){
             send_to: ga_measurement_id
             });
     }
-    var g = new Game();
-    g.initScene();
-    g.starfield = new StarField(10000, {x: 1000, y: 1000, z: 1000});
-    g.starfield.renderOrder = 1
-    g.scene.add(g.starfield)
-    
-    g.initTracks(5);
-    g.initAudio();
-    g.initShip();
-    g.sounds.playTitleMusic();
-    g.animate();
-
-    interval = window.setInterval(function() {
-        if (g.camera.position.x < 400)
-            g.camera.position.x += 0.10;
-        if (g.camera.position.y < 100) 
-            g.camera.position.y += 0.025;
-        g.camera.lookAt(0,0,0);
-    }, 10)
-
-    
-    window.g = g;
-    document.body.appendChild(g.renderer.domElement);
-    
-    console.log(g);
 }
+
 main();
