@@ -26,6 +26,7 @@ export default class HUD {
     }
 
     update_score(tracks_left,track){
+        if(track == null){ return }
         this.score_el.textContent = `${tracks_left} to go, ${track.collected}/${track.required} collected` 
     }
 }

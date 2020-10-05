@@ -80,7 +80,7 @@ function main(){
         setTimeout( e=> {
             document.getElementById("credits").style.display = "block"
             document.getElementById("overlay").style.display = "none"
-            document.getElementById("newGame").addEventListener("click", e=> {
+            document.getElementById("playAgain").addEventListener("click", e=> {
                 location.reload()
             })
         },5000)
