@@ -95,7 +95,7 @@ export default class Game {
             track.generateObstacles(this.world);
             track.position.set(0,INNER_TRACK_RADIUS,0);
             if(i > 0){
-                track.visible = false;
+                //track.visible = false;
             }
             console.log(track)
             this.scene.add(track)
@@ -163,11 +163,9 @@ export default class Game {
         },2000).start().onComplete( e => {
             this.hud.update_score(this.tracks.length, this.getCurrentTrack())
         })
-        this.hud.flash("You are Stuck in the Loop!",2000)
-        this.animate()
-        this.sounds.playMusic()
-        
-
+        this.hud.flash("You are Stuck in the Loop!", 2000);
+        this.animate();
+        this.sounds.playMusic();
     }
 
     destroy(){
