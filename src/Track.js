@@ -55,8 +55,8 @@ export default class Track extends THREE.Group {
         this.add(mesh)
         //this.obj = new THREE.()
         //this.obj.add(mesh)
-        this.coinMaterial = new THREE.MeshLambertMaterial( { color: 0x00ff00 } );
-        this.obstacleMaterial = new THREE.MeshLambertMaterial( { color: 0xff00ff } ); 
+        this.coinMaterial = new THREE.MeshLambertMaterial( { color: 0x66ff44 } );
+        this.obstacleMaterial = new THREE.MeshLambertMaterial( { color: 0xff44ff } ); 
         this.coin_geometry = new THREE.ConeBufferGeometry();
         this.obstacle_geometry = new THREE.BoxGeometry();
         this.bodies = []
@@ -147,8 +147,8 @@ export default class Track extends THREE.Group {
 
     handleCrash() {
         var oldspeed = this.speed;
-        var stopCar = new TWEEN.Tween(this).to({speed: -this.speed/2}, 250).easing(TWEEN.Easing.Quadratic.Out);
-        stopCar.chain(new TWEEN.Tween(this).to({speed: oldspeed}, 1000));
+        var stopCar = new TWEEN.Tween(this).to({speed: -this.speed/2}, 100).easing(TWEEN.Easing.Quadratic.Out);
+        stopCar.chain(new TWEEN.Tween(this).to({speed: oldspeed}, 500));
         stopCar.start();
     }
 
