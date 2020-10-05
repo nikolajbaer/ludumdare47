@@ -9,9 +9,11 @@ var game = null;
 function start(){
     game = new Game()
     const cheats = new CheatCodes(game)
-    game.init()
+    game.init();
+    cheats.init();
     document.body.appendChild( game.renderer.domElement )
     game.startGame()
+    window.GAME = game;
 }
 
 function onWindowResize(e){
@@ -25,6 +27,7 @@ function main(){
     document.getElementById("startGame").addEventListener("click", e =>{
         document.getElementById("title").style.display = "none"
         document.getElementById("overlay").style.display = "block"
+<<<<<<< HEAD
         start()
     })
 
@@ -38,13 +41,17 @@ function main(){
 
     })
 
+=======
+        start();
+    });
+>>>>>>> 7e5f906cf6550d4216b0b405b75d7fd32dae49ac
     // track resize events
     window.addEventListener( 'resize', onWindowResize, false );
 
     // Prevent default touch drag behaviour
     function preventBehavior(e) {
         e.preventDefault(); 
-    };
+    };    
     document.addEventListener("touchmove", preventBehavior, {passive: false});
 
     if(typeof(gtag) != 'undefined'){

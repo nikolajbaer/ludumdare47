@@ -3,7 +3,10 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 const cheatCodes = [
     "idfreecamera",
     "idkfa",
-    "idnloop"    
+    "idnloop",
+    "idnmusic",
+    "idpause",
+    "idgodmode"
 ]
 
 export default class CheatCodes {
@@ -13,12 +16,24 @@ export default class CheatCodes {
     }
 
     init(){
+
+        window.addEventListener("idgodmode", _e => {
+            this.game.ship.invincible = true;
+        })
+        window.addEventListener("idpause", _e => {
+            this.game.paused = !this.game.paused;
+        });
   
         window.addEventListener("idfreecamera", _e => {
-            var controls = new OrbitControls( camera, renderer.domElement );
+            var controls = new OrbitControls(this.game.camera, window.document.getElementsByTagName('canvas')[0]);
             controls.minDistance = 10;
             controls.maxDistance = 500;
         });
+
+        window.addEventListener("idnmusic", _e => {
+            console.log('music off');
+            this.game.sounds.stopMusic();
+        })
     
         window.addEventListener("idnloop", _e => {
             window.dispatchEvent(
@@ -34,10 +49,11 @@ export default class CheatCodes {
             var stillGood = false;
             cheatCodes.forEach(cheat => {
                 if (cheat.indexOf(this.cheatString) !== -1) {
+                    stillGood = true;
                     if (cheat == this.cheatString) {
                         window.dispatchEvent(new Event(cheat));
-                    }
-                    stillGood = true;
+                        stillGood = false;
+                    }                    
                     return;
                 }
             });

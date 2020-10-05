@@ -4,6 +4,75 @@ import * as THREE from "three";
 import TWEEN from "@tweenjs/tween.js"
 import { SphereGeometry } from 'three';
 
+
+function bleed(number, rate, threshold) {
+    if (Math.abs(number) < threshold) {
+        number = 0;
+    } else if (number < 0) {
+        number += rate;
+    } else if (number > 0) {
+        number -= rate;
+    }
+    return number;
+}
+
+function addhashes(v1, v2) {
+    var v3 = {}
+    var key = null
+    for (key in v1) {
+        v3[key] = v1[key] + v2[key];
+    }
+    return v3;
+}
+
+class Particle extends THREE.Object3D {
+    constructor(startingPosition) {
+        const COLORS = [
+            'yellow', 'orange'
+        ]
+        super();
+        this.clock = new THREE.Clock();
+        this.clock.start();
+        this.ttl = 0.25;
+        this.drag = 0.0001;
+        this.startX = (Math.random() < 0.5 ? 0.29 : -0.35) + startingPosition.x;
+        this.startY = startingPosition.y;
+        this.startZ = 0.9;
+        this.geo = new THREE.BoxGeometry(0.1,0.1,0.2);
+        this.mat = new THREE.MeshLambertMaterial({ color: COLORS[Math.floor(Math.random() * COLORS.length)]});
+        this.mat.transparent = true;
+        this.mesh = new THREE.Mesh(this.geo, this.mat);
+        this.mesh.castShadow = true;
+        this.mesh.receiveShadow = true;
+        this.mesh.position.x = this.startX;
+        this.mesh.position.y = this.startY;
+        this.mesh.position.z = this.startZ;
+        this.done = false;
+        this.force = {x:0, y:0, z:  (0.7 + Math.random()) / 100 };
+        this.vel = {x: 0, y: 0, z:0};
+    }
+
+    update() {
+        var elapsed = this.clock.getElapsedTime();
+        if (elapsed > this.ttl) {
+            this.done = true;
+        }
+        var pct = 1 - (elapsed / this.ttl);
+
+        this.mesh.material.opacity = pct;
+        
+        this.vel = addhashes(this.force, this.vel);
+        this.force.x = bleed(this.force.x, this.drag, 0.0001);
+        this.force.y = bleed(this.force.y, this.drag, 0.0001);
+        this.force.z = bleed(this.force.z, this.drag, 0.0001);
+
+        this.mesh.position.x = this.vel.x + this.mesh.position.x;
+        this.mesh.position.y = this.vel.y + this.mesh.position.y;
+        this.mesh.position.z = this.vel.z + this.mesh.position.z;
+    }
+}
+
+
 class Ship extends THREE.Object3D {
     constructor(model, slide_speed, extent) {
         super();
@@ -15,13 +84,22 @@ class Ship extends THREE.Object3D {
         this.ready = false;
         this.slide_speed = slide_speed
         this.extent = extent // 1/2 width of the track
-        this.lane = 0
+        this.lane = 0;
+        this.invincible = false;
+
+        this.particleCount = 20;
+        this.particles = [];
 
         // tween to target position
         this.tweenX = null;        
         this.health = 100;
     }
 
+    particleReport() {
+        this.particles.forEach(p => {
+            console.log(p);
+        });
+    }
     setControlScheme(controlScheme) {
         document.addEventListener('meshLoaded', evt => {
             console.log("configuring control scheme");
@@ -50,10 +128,27 @@ class Ship extends THREE.Object3D {
     }
 
     update(delta,elapsed) {
+        
+        
         if (!this.ready)
             return;
         this.elapsed = elapsed;
         this.mesh.position.y = (Math.sin(this.elapsed * 2 + 5.2) + Math.sin(this.elapsed) + Math.sin(this.elapsed * 2.9 + 0.34) + Math.sin(this.elapsed * 4.6 + 9.3) ) / 4 / 2 + 0.5;
+
+        if (this.health > 0 && this.particles.length < this.particleCount) {
+            var p = new Particle({x: this.mesh.position.x + Math.random()/10, y:this.mesh.position.y + 0.25});
+            this.particles.push(p);
+            this.add(p.mesh);
+        }
+
+        for (var i = 0; i < this.particles.length; i ++) {
+            var p = this.particles[i];
+            p.update();
+            if (p.done) {
+                this.remove(p.mesh);
+                this.particles = this.particles.slice(0, i).concat(this.particles.slice(i+1));
+            }
+        }        
     }
 
     load(world,scene){
@@ -90,7 +185,9 @@ class Ship extends THREE.Object3D {
     }
 
     applyDamage(damage){
-        this.health -= damage
+        if (!this.invincible) {
+            this.health -= damage
+        }
         if(this.health <= 0){
             const event = new CustomEvent("gameOver",{
                 detail: {
