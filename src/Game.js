@@ -119,7 +119,8 @@ export default class Game {
                 window.dispatchEvent( event )
                 setTimeout( e=> {
                     this.starfield.warp_speed();
-                    new TWEEN.Tween(ship.position).to({
+                    this.ship.float = false
+                    new TWEEN.Tween(this.ship.mesh.position).to({
                         y:3.5,
                         z:-10,
                     },2000).start()

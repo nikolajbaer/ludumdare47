@@ -100,6 +100,7 @@ class Ship extends THREE.Object3D {
 
         this.poof_geom = new THREE.SphereGeometry();
         this.poof_mat = new THREE.MeshLambertMaterial({ color: 0xff00ff, transparent: true, opacity:0.8 });
+        this.float = true // bobbing effect
     }
 
     particleReport() {
@@ -140,7 +141,10 @@ class Ship extends THREE.Object3D {
         if (!this.ready)
             return;
         this.elapsed = elapsed;
-        this.mesh.position.y = (Math.sin(this.elapsed * 2 + 5.2) + Math.sin(this.elapsed) + Math.sin(this.elapsed * 2.9 + 0.34) + Math.sin(this.elapsed * 4.6 + 9.3) ) / 4 / 2 + 0.5;
+
+        if(this.float){
+            this.mesh.position.y = (Math.sin(this.elapsed * 2 + 5.2) + Math.sin(this.elapsed) + Math.sin(this.elapsed * 2.9 + 0.34) + Math.sin(this.elapsed * 4.6 + 9.3) ) / 4 / 2 + 0.5;
+        }
 
         if (this.health > 0 && this.particles.length < this.particleCount) {
             var p = new Particle({x: this.mesh.position.x + Math.random()/10, y:this.mesh.position.y + 0.25});
