@@ -57,7 +57,7 @@ export default class Track extends THREE.Group {
         //this.obj.add(mesh)
         this.coinMaterial = new THREE.MeshLambertMaterial( { color: 0x66ff44 } );
         this.obstacleMaterial = new THREE.MeshLambertMaterial( { color: 0xff44ff } ); 
-        this.coin_geometry = new THREE.ConeBufferGeometry();
+        this.coin_geometry = new THREE.ConeBufferGeometry(0.5,0.5,0.5);
         this.obstacle_geometry = new THREE.BoxGeometry();
         this.bodies = []
     }
@@ -68,7 +68,8 @@ export default class Track extends THREE.Group {
             const p = new THREE.Vector3(0,this.radius - 1.5,0); 
             p.applyAxisAngle(this.axis, THREE.MathUtils.degToRad(a))
             var r = Math.random();
-            p.x = r < 0.333 ? -this.extent : r > 0.666666 ? this.extent : 0;  
+            p.x = r < 0.333 ? -this.extent : r > 0.666666 ? this.extent : 0;
+
             this.spawnObstacle( world, p )
         }
 
@@ -77,7 +78,8 @@ export default class Track extends THREE.Group {
             const p = new THREE.Vector3(0,this.radius - 1.5,0); 
             p.applyAxisAngle(this.axis, THREE.MathUtils.degToRad(a))
             var r = Math.random();
-            p.x = r < 0.333 ? -this.extent : r > 0.66666 ? this.extent : 0;  
+            p.x = r < 0.333 ? -this.extent : r > 0.66666 ? this.extent : 0;
+             
             this.spawnCoin( world, p )
         }
 
@@ -118,7 +120,7 @@ export default class Track extends THREE.Group {
         this.add( cube )
         var body = new CANNON.Body({
             mass: 50,
-            shape: new CANNON.Sphere(0.5),
+            shape: new CANNON.Sphere(1.0),
         })
         body.value = 5; //maybe double value coins some point?
         this.required += 1;
@@ -135,7 +137,7 @@ export default class Track extends THREE.Group {
         this.add(cube);
         var body = new CANNON.Body({
             mass: 50,
-            shape: new CANNON.Sphere(0.5),
+            shape: new CANNON.Sphere(0.75),
         });
         body.damage = 33 + Math.random();
         world.addBody( body );
