@@ -78,7 +78,7 @@ class Particle extends THREE.Object3D {
 
 
 class Ship extends THREE.Object3D {
-    constructor(model, slide_speed, extent) {
+    constructor(model, slide_speed, extent,difficulty) {
         super();
         this.model = model;
         this.body = null;
@@ -95,9 +95,17 @@ class Ship extends THREE.Object3D {
         this.particles = [];
 
         // tween to target position
-        this.tweenX = null;        
-        this.health = 100;
+        this.tweenX = null;
 
+        if(difficulty == "easy"){
+            this.health = 500;
+        }else if(difficulty == "hard"){
+            this.health = 100;
+        }else{
+            this.health = 200;
+        }
+
+        console.log(this.health,difficulty)
         this.poof_geom = new THREE.SphereGeometry();
         this.poof_mat = new THREE.MeshLambertMaterial({ color: 0xff00ff, transparent: true, opacity:0.8 });
         this.float = true // bobbing effect

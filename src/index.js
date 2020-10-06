@@ -9,7 +9,9 @@ import StarField from "./Starfield";
 var game = null;
 
 function start(){
-    game = new Game()
+    const difficulty = document.getElementById("difficulty").value
+    console.log("Starting with difficulty: ",difficulty)
+    game = new Game(difficulty)
     const cheats = new CheatCodes(game)
     game.init();
     cheats.init();
@@ -60,6 +62,7 @@ function main(){
         document.body.removeChild(g.renderer.domElement);
         window.clearInterval(interval);
         g = null;
+
         
         document.getElementById("title").style.display = "none"
         document.getElementById("overlay").style.display = "block"

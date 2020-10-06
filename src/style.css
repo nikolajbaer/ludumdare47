@@ -17,6 +17,10 @@ body{
     padding-top: 50px;
     position: absolute;
 }
+.title .difficulty {
+    font-size: 12pt;
+    margin-bottom: 1em;
+}
 .title button {
     padding: 20px;
     font-size: 24pt;

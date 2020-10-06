@@ -10,11 +10,12 @@ import Starfield from "./Starfield.js"
 import Sounds from "./Sounds.js"
 
 export default class Game {
-    constructor(){
+    constructor(difficulty){
         this.tracks = [];
         this.currentTrack = 0;
         this.destroyed = false
         this.paused = false;
+        this.difficulty = difficulty
     }
 
     setupLights(scene) {
@@ -79,7 +80,7 @@ export default class Game {
 
     initShip(){
         // Load Model
-        this.ship = new Ship(SHIP_GLB,400, 5.5);
+        this.ship = new Ship(SHIP_GLB,400, 5.5, this.difficulty);
         this.ship.load(this.world, this.scene);
         this.shipControls = new Controls()
         this.shipControls.connect(this.ship);
