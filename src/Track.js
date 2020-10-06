@@ -25,8 +25,8 @@ export default class Track extends THREE.Group {
         this.colorPair = colorPairs[idx]
         this.bodyMeshes = [];
         this.trackMaterials = [
-            new THREE.MeshPhysicalMaterial({clearcoat: 1.0, metalness: 0.9, color: this.colorPair[0] }),
-            new THREE.MeshPhysicalMaterial({color: this.colorPair[1], clearcoat: 1.0, metalness: 0.9})
+            new THREE.MeshPhysicalMaterial({transparent: true, clearcoat: 1.0, metalness: 0.9, color: this.colorPair[0] }),
+            new THREE.MeshPhysicalMaterial({transparent: true, color: this.colorPair[1], clearcoat: 1.0, metalness: 0.9})
         ];
         this.trackMaterials.forEach( trackMaterial => {
             trackMaterial.side = THREE.DoubleSide;            
@@ -101,13 +101,13 @@ export default class Track extends THREE.Group {
         // TODO Tween opacity
         new TWEEN.Tween(this.rotation).to({
             z: Math.PI/2
-        },3000).start().onComplete( e => { this.visible = false; } )
+        },1000).start().onComplete( e => { this.visible = false; } )
         new TWEEN.Tween(this.trackMaterials[0]).to({
             opacity: 0 
-        },3000).start()
+        },1000).start()
         new TWEEN.Tween(this.trackMaterials[1]).to({
             opacity: 0 
-        },3000).start()
+        },1000).start()
         //this.visible = false
         this.bodies.forEach( b => {
             b.remove = true 
