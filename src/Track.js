@@ -35,7 +35,7 @@ export default class Track extends THREE.Group {
             radius,
             radius,
             width,
-            64,
+            32,
             4,
             true
         );
