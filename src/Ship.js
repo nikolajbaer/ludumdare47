@@ -101,6 +101,8 @@ class Ship extends THREE.Object3D {
             this.health = 500;
         }else if(difficulty == "hard"){
             this.health = 100;
+        }else if(difficulty == "nightmare") {
+            this.health = 1; // muhaha
         }else{
             this.health = 200;
         }
