@@ -41,6 +41,7 @@ function main(){
     g.initAudio();
     g.initShip();
     g.sounds.playTitleMusic();
+    g.clock.start();
     g.animate();
 
     interval = window.setInterval(function() {

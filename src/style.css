@@ -34,16 +34,21 @@ body{
     width: 100%;
     height: 100%;
     color: white;
-    
+    overflow:hidden;
     pointer-events: none;
 }
 .hud {
     position: absolute;
     bottom: 10px;
     width: 100%;
+    height:100%;
     font-size: 8pt;
     text-align: center;
     margin: auto;
+}
+.hud #clock {
+    font-size: 72px;
+    width:100%;
 }
 .hud button {
     padding: 20px;
@@ -84,7 +89,7 @@ body{
     width: 100%;
     height: 100%;
     text-align: center;
-    color: #0f0;
+    color: #fd3;
     font-size: 64pt;
     font-weight: bold;
 }
