@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import * as CANNON from "cannon";
+import TWEEN, { Tween } from "@tweenjs/tween.js";
 
 const colorPairs = [
     [0x804060, 0x202030],

@@ -52,7 +52,7 @@ export default class CircleTrack extends AbstractTrack {
         }
 
         // Good things
-        for(var a =0; a < 360; a+= 15){
+        for(var a =2.5; a < 360; a+= 15){
             const p = new THREE.Vector3(0,this.radius - 1.5,0); 
             p.applyAxisAngle(this.axis, THREE.MathUtils.degToRad(a))
             var r = Math.random();
