@@ -47,9 +47,6 @@ export default class Controls {
                 case 'ArrowRight':
                     ship.slideRight();
                     break;
-                case ' ':
-                    window.dispatchEvent(new Event('idpause'))
-                    break
             }
         });
 
@@ -70,6 +67,10 @@ export default class Controls {
 
         window.addEventListener("keyup", ev => {
             ship.recenter();
+            if( ev.key == ' '){
+                console.log("Key",ev.key)
+                window.dispatchEvent(new Event('idpause'))
+            }
         });
 
         window.addEventListener("gamepadconnected", e => {

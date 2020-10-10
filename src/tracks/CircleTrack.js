@@ -48,7 +48,8 @@ export default class CircleTrack extends AbstractTrack {
             var r = Math.random();
             p.x = r < 0.333 ? -this.extent : r > 0.666666 ? this.extent : 0;
 
-            this.spawnObstacle(world, p, a)
+            const normal = p.clone().multiplyScalar(-1)
+            this.spawnObstacle(world, p, normal)
         }
 
         // Good things

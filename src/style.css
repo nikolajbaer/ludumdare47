@@ -6,6 +6,10 @@ body{
     padding: 0px; 
     
 }
+::selection {
+    color: none;
+    background: none;
+}
 .title {
     position: absolute;
     width: 100%;

@@ -53,7 +53,7 @@ export default class Game {
     init(){
         this.initScene() 
         this.initShip()
-        this.initTracks(5)
+        this.initTracks(1)
         this.initAudio()
         this.setupHud()
         this.connectEvents()
@@ -94,8 +94,8 @@ export default class Game {
     initTracks(n){
         const INNER_TRACK_RADIUS = 100
         for(var i=0; i<n; i++){
-            var track = new CircleTrack(INNER_TRACK_RADIUS + 10*i,0.5 + (i / 10), 22 , i);
-            //var track = new MobiusTrack(INNER_TRACK_RADIUS + 10*i,0.5 + (i / 10),18 + 4*i, i);
+            //var track = new CircleTrack(INNER_TRACK_RADIUS + 10*i,0.5 + (i / 10), 22 , i);
+            var track = new MobiusTrack(INNER_TRACK_RADIUS + 10*i,0.5 + (i / 10),18 + 4*i, i);
             track.generateObstacles(this.world);
             track.position.set(0,INNER_TRACK_RADIUS,0);
             if(i > 0){
@@ -233,7 +233,7 @@ export default class Game {
         })
         this.starfield.update(delta)
 
-        if (typeof this.hud !== 'undefined') {
+        if (typeof this.hud !== 'undefined' && !this.paused) {
             this.hud.update_clock(this.clock.getElapsedTime());
         }
     }

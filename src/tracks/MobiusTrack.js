@@ -11,8 +11,8 @@ function mobius_point(u,v,vec,s){
 
 function mobius_normal(u,s){
     const p0 = mobius_point(u,0,new THREE.Vector3(),s)
-    const p1 = mobius_point(u,0.01,new THREE.Vector3(),s)
-    const p2 = mobius_point(u+0.01,1,new THREE.Vector3(),s)
+    const p1 = mobius_point(u,0.1,new THREE.Vector3(),s)
+    const p2 = mobius_point(u+0.1,0,new THREE.Vector3(),s)
     const v0 = p1.sub(p0) 
     const v1 = p2.sub(p0)
     const normal = v1.cross(v0)
@@ -46,11 +46,15 @@ export default class MobiusTrack extends AbstractTrack {
     generateObstacles(world){
         // Bad things
         for(var a =0; a < 360; a+= 10){
-            const p = new THREE.Vector3(0,this.radius - 1.5,0); 
-            p.applyAxisAngle(this.axis, THREE.MathUtils.degToRad(a))
-            var r = Math.random();
-            p.x = r < 0.333 ? -this.extent : r > 0.666666 ? this.extent : 0;  
-            this.spawnObstacle( world, p, a )
+            const r = Math.random();
+            const v = r < 0.333 ? -this.extent : r > 0.666666 ? this.extent : 0;  
+            const p = new THREE.Vector3()
+            const u = THREE.MathUtils.degToRad(a)
+            mobius_point(u, v, p, this.radius); 
+            const n = mobius_normal(u,this.radius)
+            // we need to rotate around y
+            p.applyAxisAngle(new THREE.Vector3(0,1,0),Math.PI/2)
+            this.spawnObstacle( world, p, n )
         }
 
         // Good things
@@ -94,6 +98,6 @@ export default class MobiusTrack extends AbstractTrack {
         this.rotation.set(this.theta,0,0)
         this.trackMesh.rotation.set(0,0,0)
         this.trackMesh.rotateY(Math.PI/2)
-        this.trackMesh.rotateZ(this.up.angleTo(normal))
+        //this.trackMesh.rotateZ(this.up.angleTo(normal))
     }
 }

@@ -60,10 +60,10 @@ export default class AbstractTrack extends THREE.Group {
     }
 
 
-    spawnObstacle(world, pos, ang){
+    spawnObstacle(world, pos, normal){
         var cube = new THREE.Mesh( this.obstacle_geometry, this.obstacleMaterial );
         cube.position.set(pos.x,pos.y,pos.z)
-        cube.rotateX(THREE.MathUtils.degToRad(ang+90));
+        cube.lookAt(pos.clone().add(normal.multiplyScalar(50)));
         this.add(cube);
         var body = new CANNON.Body({
             mass: 50,
