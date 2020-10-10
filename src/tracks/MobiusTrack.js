@@ -3,9 +3,9 @@ import TWEEN, { Tween } from "@tweenjs/tween.js";
 import * as THREE from "three";
 
 function mobius_point(u,v,vec,s){
-    vec.x = (s + (v/2 * Math.cos(u/2))) * Math.cos(u)
+    vec.z = (s + (v/2 * Math.cos(u/2))) * Math.cos(u)
     vec.y = (s + (v/2 * Math.cos(u/2))) * Math.sin(u)
-    vec.z = v/2 * Math.sin(u/2)
+    vec.x = v/2 * Math.sin(u/2)
     return vec
 }
 
@@ -20,14 +20,24 @@ function mobius_normal(u,s){
     return normal
 } 
 
+function mobius_forward(u,s){
+    const p0 = mobius_point(u,0,new THREE.Vector3(),s)
+    const p2 = mobius_point(u+0.1,0,new THREE.Vector3(),s)
+    const fwd = p2.sub(p0) 
+    fwd.normalize()
+    return fwd 
+}
+
 export default class MobiusTrack extends AbstractTrack {
 
     constructor( radius, speed, width, idx ){ 
         super(radius, speed, width, idx);
+        this.required = 1000
         this.axis = new THREE.Vector3(1,0,0) 
         this.theta = 0 // x rotation 
         this.allRotations = false;
         this.bodyMeshes = [];
+
         var trackGeometry = new THREE.ParametricBufferGeometry( (_u,_v,vec) => {
             const u = _u * (Math.PI*2)
             const v = (width) - (_v * (2*width))
@@ -37,10 +47,18 @@ export default class MobiusTrack extends AbstractTrack {
         this.trackMaterial = new THREE.MeshPhysicalMaterial({clearcoat: 1.0, metalness: 0.9, color: this.colorPair[0] , side: THREE.DoubleSide})
         this.trackMesh = new THREE.Mesh( trackGeometry, this.trackMaterial);
         this.trackMesh.receiveShadow = true;
-        this.trackMesh.rotation.y = Math.PI/2
+        //this.trackMesh.rotation.y = Math.PI/2
         this.add(this.trackMesh)
         this.up = new THREE.Vector3(0,1,0)
 
+    }
+
+    point_and_normal(a,x){
+        const u = THREE.MathUtils.degToRad(a)
+        const p = new THREE.Vector3()
+        mobius_point(u, x, p, this.radius); 
+        const n = mobius_normal(u,this.radius)
+        return {p:p,n:n}
     }
 
     generateObstacles(world){
@@ -48,22 +66,18 @@ export default class MobiusTrack extends AbstractTrack {
         for(var a =0; a < 360; a+= 10){
             const r = Math.random();
             const v = r < 0.333 ? -this.extent : r > 0.666666 ? this.extent : 0;  
-            const p = new THREE.Vector3()
-            const u = THREE.MathUtils.degToRad(a)
-            mobius_point(u, v, p, this.radius); 
-            const n = mobius_normal(u,this.radius)
-            // we need to rotate around y
-            p.applyAxisAngle(new THREE.Vector3(0,1,0),Math.PI/2)
-            this.spawnObstacle( world, p, n )
+            const xl = this.point_and_normal(a,-v*2)
+            this.spawnObstacle( world, xl.p, xl.n )
         }
 
         // Good things
         for(var a =2.5; a < 360; a+= 15){
-            const p = new THREE.Vector3(0,this.radius - 1.5,0); 
-            p.applyAxisAngle(this.axis, THREE.MathUtils.degToRad(a))
-            var r = Math.random();
-            p.x = r < 0.333 ? -this.extent : r > 0.66666 ? this.extent : 0;  
-            this.spawnCoin( world, p )
+            const xl = this.point_and_normal(a,-this.extent*2)
+            this.spawnCoin( world, xl.p, xl.n )
+            const xm = this.point_and_normal(a,0)
+            this.spawnCoin( world, xm.p, xm.n )
+            const xr = this.point_and_normal(a,this.extent*2)
+            this.spawnCoin( world, xr.p, xr.n )
         }
 
     }
@@ -93,11 +107,7 @@ export default class MobiusTrack extends AbstractTrack {
     }
 
     spin(delta){ 
-        this.theta -= this.speed * delta * 0.1
-        const normal = mobius_normal(-this.theta,this.radius)
+        this.theta -= this.speed * delta * 0.5
         this.rotation.set(this.theta,0,0)
-        this.trackMesh.rotation.set(0,0,0)
-        this.trackMesh.rotateY(Math.PI/2)
-        //this.trackMesh.rotateZ(this.up.angleTo(normal))
     }
 }

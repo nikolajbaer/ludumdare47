@@ -97,7 +97,7 @@ export default class Game {
             //var track = new CircleTrack(INNER_TRACK_RADIUS + 10*i,0.5 + (i / 10), 22 , i);
             var track = new MobiusTrack(INNER_TRACK_RADIUS + 10*i,0.5 + (i / 10),18 + 4*i, i);
             track.generateObstacles(this.world);
-            track.position.set(0,INNER_TRACK_RADIUS,0);
+            track.setOffset(INNER_TRACK_RADIUS);
             if(i > 0){
                 //track.visible = false;
             }

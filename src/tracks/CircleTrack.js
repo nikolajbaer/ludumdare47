@@ -58,8 +58,9 @@ export default class CircleTrack extends AbstractTrack {
             p.applyAxisAngle(this.axis, THREE.MathUtils.degToRad(a))
             var r = Math.random();
             p.x = r < 0.333 ? -this.extent : r > 0.66666 ? this.extent : 0;
-             
-            this.spawnCoin( world, p )
+
+            const normal = p.clone().multiplyScalar(-1)
+            this.spawnCoin( world, p, normal)
         }
 
     }

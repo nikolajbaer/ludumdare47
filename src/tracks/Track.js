@@ -31,6 +31,11 @@ export default class AbstractTrack extends THREE.Group {
 
     }
 
+    setOffset(r){
+        this.offset = r;
+        this.position.set(0,r,0)
+    }
+
     collect(v){        
         this.collected += v;
         if(this.collected > this.required){
@@ -43,9 +48,10 @@ export default class AbstractTrack extends THREE.Group {
         }
     }
 
-    spawnCoin(world, pos){
+    spawnCoin(world, pos, normal){
         var cube = new THREE.Mesh( this.coin_geometry, this.coinMaterial );
         cube.position.set(pos.x,pos.y,pos.z)
+        cube.lookAt(pos.clone().add(normal.multiplyScalar(50)));
         this.add( cube )
         var body = new CANNON.Body({
             mass: 50,
@@ -102,6 +108,7 @@ export default class AbstractTrack extends THREE.Group {
     }
     
     /** Abstrct Methods to override **/
+
     generateObstacles(world){
     }
 
