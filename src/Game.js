@@ -45,7 +45,8 @@ export default class Game {
         this.hud = new HUD(
             document.getElementById("healthbar"),
             document.getElementById("flash"),
-            document.getElementById("score")
+            document.getElementById("score"),
+            document.getElementById("clock")
         )
     }
 
@@ -93,14 +94,13 @@ export default class Game {
     initTracks(n){
         const INNER_TRACK_RADIUS = 100
         for(var i=0; i<n; i++){
-            //var track = new CircleTrack(INNER_TRACK_RADIUS + 10*i,0.5 + (i / 10),18 + 4*i, i);
+            //var track = new CircleTrack(INNER_TRACK_RADIUS + 10*i,0.5 + (i / 10), 22 , i);
             var track = new MobiusTrack(INNER_TRACK_RADIUS + 10*i,0.5 + (i / 10),18 + 4*i, i);
             track.generateObstacles(this.world);
             track.position.set(0,INNER_TRACK_RADIUS,0);
             if(i > 0){
                 //track.visible = false;
             }
-            console.log(track)
             this.scene.add(track)
             this.tracks.push(track)
         }
@@ -116,6 +116,7 @@ export default class Game {
             const track = ev.detail.track;
             track.deactivate()
             this.currentTrack += 1 
+            this.sounds.triggerSound('changeloop');
             if( this.currentTrack >= this.tracks.length){
                 this.hud.flash("Loop Escaped!",10000)
                 const event = new Event("loopEscaped")
@@ -171,9 +172,11 @@ export default class Game {
         },2000).start().onComplete( e => {
             this.hud.update_score(this.tracks.length, this.getCurrentTrack())
         })
-        this.hud.flash("You are Stuck in the Loop!", 2000);
         this.animate();
         this.sounds.playMusic();
+        window.setTimeout(_ => {
+            this.hud.flash("GET HYPED", 1000);
+        },250);
     }
 
     destroy(){
@@ -198,18 +201,18 @@ export default class Game {
         if(this.ship == null){ return }
 
         if( this.shipControls.gp != null){
-            this.shipControls.checkAxis(this.ship);
+            this.shipControls.checkAxis(this.ship)
         }
 
         this.tracks.forEach( t => {
             if (!this.paused) {
-                t.spin(delta);
+                t.spin(delta)
             }
         })
 
-        this.ship.update(delta,this.clock.elapsedTime);
+        this.ship.update(delta,this.clock.elapsedTime)
 
-        this.world.step(delta);
+        this.world.step(delta)
         this.world.bodies.forEach( b => {
             if(b.mesh != undefined){
                 if(b.remove){
@@ -229,6 +232,10 @@ export default class Game {
             t.active = true
         })
         this.starfield.update(delta)
+
+        if (typeof this.hud !== 'undefined') {
+            this.hud.update_clock(this.clock.getElapsedTime());
+        }
     }
 
     animate(time) {
@@ -241,7 +248,7 @@ export default class Game {
     }
 
     getCurrentTrack(){
-        if(this.currentTrack < this.tracks.length){
+        if(this.currentTrack < this.tracks.length) {
             return this.tracks[this.currentTrack]
         }
         return null;

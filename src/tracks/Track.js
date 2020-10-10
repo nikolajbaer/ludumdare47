@@ -24,8 +24,8 @@ export default class AbstractTrack extends THREE.Group {
 
         this.coinMaterial = new THREE.MeshLambertMaterial( { color: 0x66ff44 } );
         this.obstacleMaterial = new THREE.MeshLambertMaterial( { color: 0xff44ff } ); 
-        this.coin_geometry = new THREE.ConeBufferGeometry();
-        this.obstacle_geometry = new THREE.BoxGeometry();
+        this.coin_geometry = new THREE.ConeBufferGeometry(0.5,0.5,0.5);
+        this.obstacle_geometry = new THREE.BoxGeometry(1.0,1.0,3.0)
         this.bodies = []
 
     }
@@ -42,19 +42,13 @@ export default class AbstractTrack extends THREE.Group {
         }
     }
 
-    deactivate(){
-    }
-
-    handleCrash() {
-    }
-
     spawnCoin(world, pos){
         var cube = new THREE.Mesh( this.coin_geometry, this.coinMaterial );
         cube.position.set(pos.x,pos.y,pos.z)
         this.add( cube )
         var body = new CANNON.Body({
             mass: 50,
-            shape: new CANNON.Sphere(0.5),
+            shape: new CANNON.Sphere(1.0),
         })
         body.value = 5; //maybe double value coins some point?
         this.required += 1;
@@ -65,13 +59,14 @@ export default class AbstractTrack extends THREE.Group {
     }
 
 
-    spawnObstacle(world, pos){
+    spawnObstacle(world, pos, ang){
         var cube = new THREE.Mesh( this.obstacle_geometry, this.obstacleMaterial );
         cube.position.set(pos.x,pos.y,pos.z)
+        cube.rotateX(THREE.MathUtils.degToRad(ang+90));
         this.add(cube);
         var body = new CANNON.Body({
             mass: 50,
-            shape: new CANNON.Sphere(0.5),
+            shape: new CANNON.Sphere(0.75),
         });
         body.damage = 33 + Math.random();
         world.addBody( body );
@@ -81,8 +76,35 @@ export default class AbstractTrack extends THREE.Group {
         this.bodies.push(body)
     }
 
+    deactivate(){
+        // TODO Tween opacity
+        new TWEEN.Tween(this.rotation).to({
+            z: Math.PI/2
+        },1000).start().onComplete( e => { this.visible = false; } )
+        new TWEEN.Tween(this.trackMaterials[0]).to({
+            opacity: 0 
+        },1000).start()
+        new TWEEN.Tween(this.trackMaterials[1]).to({
+            opacity: 0 
+        },1000).start()
+        //this.visible = false
+        this.bodies.forEach( b => {
+            b.remove = true 
+        })
+    }
+
+    handleCrash() {
+        var oldspeed = this.speed;
+        var stopCar = new TWEEN.Tween(this).to({speed: -this.speed/2}, 100).easing(TWEEN.Easing.Quadratic.Out);
+        stopCar.chain(new TWEEN.Tween(this).to({speed: oldspeed}, 500));
+        stopCar.start();
+    }
+    
+    /** Abstrct Methods to override **/
+    generateObstacles(world){
+    }
+
     spin(delta){
-        // Abstract
     }
 }
 
