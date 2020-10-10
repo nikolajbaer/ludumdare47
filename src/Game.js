@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import * as CANNON from "cannon";
 import Controls from "./controls.js";
-import Track from "./Track.js"
+import CircleTrack from "./tracks/Track.js"
 import Ship from "./Ship.js"
 import SHIP_GLB from "./assets/kenney/craft_speederA.glb";
 import TWEEN from "@tweenjs/tween.js"
@@ -92,7 +92,7 @@ export default class Game {
     initTracks(n){
         const INNER_TRACK_RADIUS = 100
         for(var i=0; i<n; i++){
-            var track = new Track(INNER_TRACK_RADIUS + 10*i,0.5 + (i / 10),18 + 4*i, i);
+            var track = new CircleTrack(INNER_TRACK_RADIUS + 10*i,0.5 + (i / 10),18 + 4*i, i);
             track.generateObstacles(this.world);
             track.position.set(0,INNER_TRACK_RADIUS,0);
             if(i > 0){
