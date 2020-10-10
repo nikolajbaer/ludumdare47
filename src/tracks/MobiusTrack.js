@@ -49,8 +49,6 @@ export default class MobiusTrack extends AbstractTrack {
         this.trackMesh.receiveShadow = true;
         //this.trackMesh.rotation.y = Math.PI/2
         this.add(this.trackMesh)
-        this.up = new THREE.Vector3(0,1,0)
-
     }
 
     point_and_normal(a,x){
@@ -109,5 +107,10 @@ export default class MobiusTrack extends AbstractTrack {
     spin(delta){ 
         this.theta -= this.speed * delta * 0.5
         this.rotation.set(this.theta,0,0)
+
+        const p = new THREE.Vector3()
+        mobius_point( this.theta, 0, p, this.radius )            
+        const normal = mobius_normal(this.theta,this.radius)
+
     }
 }
