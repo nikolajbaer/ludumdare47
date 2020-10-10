@@ -47,6 +47,9 @@ export default class Controls {
                 case 'ArrowRight':
                     ship.slideRight();
                     break;
+                case ' ':
+                    window.dispatchEvent(new Event('idpause'))
+                    break
             }
         });
 
