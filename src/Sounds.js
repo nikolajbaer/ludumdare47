@@ -7,9 +7,10 @@ import PICKUP_SOUND5 from "./assets/sounds/pickup-004.mp3"
 import PICKUP_SOUND6 from "./assets/sounds/pickup-005.mp3"
 import PICKUP_SOUND7 from "./assets/sounds/pickup-006.mp3"
 import PICKUP_SOUND8 from "./assets/sounds/pickup-007.mp3"
-import COLLISION_SOUND from "./assets/sounds/circle-collide-glitch.mp3";
-import MAIN_MUSIC from "./assets/sounds/circle-play-music-001.mp3";
-import TITLE_MUSIC from "./assets/sounds/the-circle.mp3";
+import COLLISION_SOUND from "./assets/sounds/circle-collide-glitch.mp3"
+import MAIN_MUSIC from "./assets/sounds/circle-play-music-001.mp3"
+import TITLE_MUSIC from "./assets/sounds/the-circle.mp3"
+import LOOP_TXN from "./assets/sounds/the-circle-loop-txn-005.mp3"
 
 const SOUNDS = [
     ["pickup1",PICKUP_SOUND1],
@@ -20,7 +21,8 @@ const SOUNDS = [
     ["pickup6",PICKUP_SOUND6],
     ["pickup7",PICKUP_SOUND7],
     ["pickup8",PICKUP_SOUND8],
-    ["collide1", COLLISION_SOUND]
+    ["collide1", COLLISION_SOUND],
+    ["changeloop", LOOP_TXN]
 ]
 
 export default class Sounds {
@@ -47,7 +49,7 @@ export default class Sounds {
     playMusic(){
         if(!this.music.loaded){
             this.music.autoplay = true
-        }else{
+        } else {
             this.music.play()
         }
     }

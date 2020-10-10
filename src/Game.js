@@ -99,7 +99,6 @@ export default class Game {
             if(i > 0){
                 //track.visible = false;
             }
-            console.log(track)
             this.scene.add(track)
             this.tracks.push(track)
         }
@@ -115,6 +114,7 @@ export default class Game {
             const track = ev.detail.track;
             track.deactivate()
             this.currentTrack += 1 
+            this.sounds.triggerSound('changeloop');
             if( this.currentTrack >= this.tracks.length){
                 this.hud.flash("Loop Escaped!",10000)
                 const event = new Event("loopEscaped")
@@ -246,7 +246,7 @@ export default class Game {
     }
 
     getCurrentTrack(){
-        if(this.currentTrack < this.tracks.length){
+        if(this.currentTrack < this.tracks.length) {
             return this.tracks[this.currentTrack]
         }
         return null;
