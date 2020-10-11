@@ -94,8 +94,8 @@ export default class Game {
     initTracks(n){
         const INNER_TRACK_RADIUS = 100
         for(var i=0; i<n; i++){
-            var track = new CircleTrack(INNER_TRACK_RADIUS + 10*i,0.5 + (i / 10), 22 , i);
-            //var track = new MobiusTrack(INNER_TRACK_RADIUS + 10*i,0.5 + (i / 10),18 + 4*i, i);
+            //var track = new CircleTrack(INNER_TRACK_RADIUS + 10*i,0.5 + (i / 10), 22 , i);
+            var track = new MobiusTrack(INNER_TRACK_RADIUS + 10*i,0.5 + (i / 10),18 + 4*i, i);
             track.generateObstacles(this.world);
             track.setOffset(INNER_TRACK_RADIUS);
             if(i > 0){

@@ -37,7 +37,7 @@ export default class CircleTrack extends AbstractTrack {
         const mesh = new THREE.Mesh( trackGeometry, this.trackMaterial);
         mesh.receiveShadow = true;
         mesh.rotateZ(Math.PI/2)
-        this.add(mesh)
+        this.pivot.add(mesh)
     }
 
     generateObstacles(world){
@@ -67,14 +67,14 @@ export default class CircleTrack extends AbstractTrack {
   
     spin(delta){
         if(this.allRotations) {
-            this.rotateZ(-this.speed*0.25*delta)
-            this.rotateY(this.speed*delta);
+            this.pivot.rotateZ(-this.speed*0.25*delta)
+            this.pivot.rotateY(this.speed*delta);
         }
         if (this.bodyMeshes) {
             this.bodyMeshes.forEach(b => {
                 b.rotateZ( Math.random() * 10 * delta);
             });
         }
-        this.rotateX(-this.speed*delta)
+        this.pivot.rotateX(-this.speed*delta)
     }
 }

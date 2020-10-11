@@ -1,6 +1,7 @@
 import AbstractTrack from "./Track.js";
 import TWEEN, { Tween } from "@tweenjs/tween.js";
 import * as THREE from "three";
+import { IntType } from "three";
 
 function mobius_point(u,v,vec,s){
     vec.z = (s + (v/2 * Math.cos(u/2))) * Math.cos(u)
@@ -23,7 +24,7 @@ function mobius_normal(u,s){
 function mobius_forward(u,s){
     const p0 = mobius_point(u,0,new THREE.Vector3(),s)
     const p2 = mobius_point(u+0.1,0,new THREE.Vector3(),s)
-    const fwd = p2.sub(p0) 
+    const fwd = p0.sub(p2) 
     fwd.normalize()
     return fwd 
 }
@@ -48,7 +49,7 @@ export default class MobiusTrack extends AbstractTrack {
         this.trackMesh = new THREE.Mesh( trackGeometry, this.trackMaterial);
         this.trackMesh.receiveShadow = true;
         //this.trackMesh.rotation.y = Math.PI/2
-        this.add(this.trackMesh)
+        this.pivot.add(this.trackMesh)
     }
 
     point_and_normal(a,x){
@@ -65,7 +66,7 @@ export default class MobiusTrack extends AbstractTrack {
             const r = Math.random();
             const v = r < 0.333 ? -this.extent : r > 0.666666 ? this.extent : 0;  
             const xl = this.point_and_normal(a,-v*2)
-            this.spawnObstacle( world, xl.p, xl.n )
+            //this.spawnObstacle( world, xl.p, xl.n )
         }
 
         // Good things
@@ -77,7 +78,6 @@ export default class MobiusTrack extends AbstractTrack {
             const xr = this.point_and_normal(a,this.extent*2)
             this.spawnCoin( world, xr.p, xr.n )
         }
-
     }
 
     deactivate(){
@@ -105,12 +105,26 @@ export default class MobiusTrack extends AbstractTrack {
     }
 
     spin(delta){ 
-        this.theta -= this.speed * delta * 0.5
-        this.rotation.set(this.theta,0,0)
-
+        this.theta -= this.speed * delta
+        
+        // obj coords
         const p = new THREE.Vector3()
         mobius_point( this.theta, 0, p, this.radius )            
-        const normal = mobius_normal(this.theta,this.radius)
+        const normal = mobius_normal(this.theta, this.radius)
+        const forward = mobius_forward(this.theta, this.radius)
 
+        // place track and obstacles in correct spot
+        this.pivot.position.set(-p.x,-p.y,-p.z)
+
+        // rotate this to look along the track
+        const mx = new THREE.Matrix4().lookAt(
+            new THREE.Vector3(),
+            forward,
+            normal            
+        )
+        const qt = new THREE.Quaternion().setFromRotationMatrix(mx)
+        const rmx = new THREE.Matrix4().getInverse( mx )            
+        const rqt = new THREE.Quaternion().setFromRotationMatrix( rmx )
+        this.quaternion.copy( rqt )
     }
 }

@@ -28,12 +28,14 @@ export default class AbstractTrack extends THREE.Group {
         this.coin_geometry = new THREE.ConeBufferGeometry(0.5,0.5,0.5);
         this.obstacle_geometry = new THREE.BoxGeometry(1.0,1.0,3.0)
         this.bodies = []
-
+        // contain track and obstacles in a container we can easier manipulate
+        this.pivot = new THREE.Group()
+        this.add(this.pivot)
     }
 
     setOffset(r){
         this.offset = r;
-        this.position.set(0,r,0)
+        this.pivot.position.set(0,r,0)
     }
 
     collect(v){        
@@ -52,7 +54,7 @@ export default class AbstractTrack extends THREE.Group {
         var cube = new THREE.Mesh( this.coin_geometry, this.coinMaterial );
         cube.position.set(pos.x,pos.y,pos.z)
         cube.lookAt(pos.clone().add(normal.multiplyScalar(50)));
-        this.add( cube )
+        this.pivot.add( cube )
         var body = new CANNON.Body({
             mass: 50,
             shape: new CANNON.Sphere(1.0),
@@ -70,7 +72,7 @@ export default class AbstractTrack extends THREE.Group {
         var cube = new THREE.Mesh( this.obstacle_geometry, this.obstacleMaterial );
         cube.position.set(pos.x,pos.y,pos.z)
         cube.lookAt(pos.clone().add(normal.multiplyScalar(50)));
-        this.add(cube);
+        this.pivot.add(cube);
         var body = new CANNON.Body({
             mass: 50,
             shape: new CANNON.Sphere(0.75),
