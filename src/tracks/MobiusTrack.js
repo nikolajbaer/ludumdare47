@@ -33,6 +33,8 @@ export default class MobiusTrack extends AbstractTrack {
 
     constructor( radius, speed, width, idx ){ 
         super(radius, speed, width, idx);
+        this.radius *= 2
+        this.speed *= 0.5
         this.required = 1000
         this.axis = new THREE.Vector3(1,0,0) 
         this.theta = 0 // x rotation 
@@ -45,7 +47,14 @@ export default class MobiusTrack extends AbstractTrack {
             mobius_point(u,v,vec,this.radius)
         }, 128, 16 )
         trackGeometry = trackGeometry.toNonIndexed()
-        this.trackMaterial = new THREE.MeshPhysicalMaterial({clearcoat: 1.0, metalness: 0.9, color: this.colorPair[0] , side: THREE.DoubleSide})
+        this.trackMaterial = new THREE.MeshPhysicalMaterial({
+            clearcoat: 1.0, 
+            metalness: 0.9, 
+            color: this.colorPair[0] , 
+            side: THREE.DoubleSide, 
+            opacity: 0.7,
+            transparent: true
+        })
         this.trackMesh = new THREE.Mesh( trackGeometry, this.trackMaterial);
         this.trackMesh.receiveShadow = true;
         //this.trackMesh.rotation.y = Math.PI/2
@@ -62,21 +71,19 @@ export default class MobiusTrack extends AbstractTrack {
 
     generateObstacles(world){
         // Bad things
-        for(var a =0; a < 360; a+= 10){
+        for(var a =0; a < 360; a+= 5){
             const r = Math.random();
             const v = r < 0.333 ? -this.extent : r > 0.666666 ? this.extent : 0;  
             const xl = this.point_and_normal(a,-v*2)
-            //this.spawnObstacle( world, xl.p, xl.n )
+            this.spawnObstacle( world, xl.p, xl.n )
         }
 
         // Good things
-        for(var a =2.5; a < 360; a+= 15){
-            const xl = this.point_and_normal(a,-this.extent*2)
+        for(var a =2.5; a < 360; a+= 5){
+            const r = Math.random();
+            const v = r < 0.333 ? -this.extent : r > 0.666666 ? this.extent : 0;  
+            const xl = this.point_and_normal(a,-v*2)
             this.spawnCoin( world, xl.p, xl.n )
-            const xm = this.point_and_normal(a,0)
-            this.spawnCoin( world, xm.p, xm.n )
-            const xr = this.point_and_normal(a,this.extent*2)
-            this.spawnCoin( world, xr.p, xr.n )
         }
     }
 
@@ -85,13 +92,9 @@ export default class MobiusTrack extends AbstractTrack {
         new TWEEN.Tween(this.rotation).to({
             z: Math.PI/2
         },3000).start().onComplete( e => { this.visible = false; } )
-        new TWEEN.Tween(this.trackMaterials[0]).to({
+        new TWEEN.Tween(this.trackMaterial).to({
             opacity: 0 
         },3000).start()
-        new TWEEN.Tween(this.trackMaterials[1]).to({
-            opacity: 0 
-        },3000).start()
-        //this.visible = false
         this.bodies.forEach( b => {
             b.remove = true 
         })
@@ -106,7 +109,9 @@ export default class MobiusTrack extends AbstractTrack {
 
     spin(delta){ 
         this.theta -= this.speed * delta
-        
+       
+        this.speed += 0.004 * delta
+
         // obj coords
         const p = new THREE.Vector3()
         mobius_point( this.theta, 0, p, this.radius )            
