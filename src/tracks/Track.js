@@ -85,6 +85,12 @@ export default class AbstractTrack extends THREE.Group {
         this.bodies.push(body)
     }
 
+    make_current(transition_time){
+        new TWEEN.Tween(this.pivot.position).to({
+            y: this.radius
+        },transition_time).start()
+    }
+
     deactivate(){
         // TODO Tween opacity
         new TWEEN.Tween(this.rotation).to({

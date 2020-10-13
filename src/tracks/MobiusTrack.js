@@ -33,9 +33,9 @@ export default class MobiusTrack extends AbstractTrack {
 
     constructor( radius, speed, width, idx ){ 
         super(radius, speed, width, idx);
-        this.radius *= 2
-        this.speed *= 0.5
-        this.required = 1000
+        //this.radius *= 2
+        //this.speed *= 0.5
+        //this.required = 1000
         this.axis = new THREE.Vector3(1,0,0) 
         this.theta = 0 // x rotation 
         this.allRotations = false;
@@ -71,7 +71,7 @@ export default class MobiusTrack extends AbstractTrack {
 
     generateObstacles(world){
         // Bad things
-        for(var a =0; a < 360; a+= 5){
+        for(var a =0; a < 360; a+= 15){
             const r = Math.random();
             const v = r < 0.333 ? -this.extent : r > 0.666666 ? this.extent : 0;  
             const xl = this.point_and_normal(a,-v*2)
@@ -79,7 +79,7 @@ export default class MobiusTrack extends AbstractTrack {
         }
 
         // Good things
-        for(var a =2.5; a < 360; a+= 5){
+        for(var a = 7.5; a < 360; a+= 15){
             const r = Math.random();
             const v = r < 0.333 ? -this.extent : r > 0.666666 ? this.extent : 0;  
             const xl = this.point_and_normal(a,-v*2)

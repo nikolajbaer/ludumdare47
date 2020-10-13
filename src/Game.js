@@ -53,7 +53,7 @@ export default class Game {
     init(){
         this.initScene() 
         this.initShip()
-        this.initTracks(1)
+        this.initTracks(5)
         this.initAudio()
         this.setupHud()
         this.connectEvents()
@@ -70,6 +70,9 @@ export default class Game {
         this.world = new CANNON.World();
 
         this.clock = new THREE.Clock();
+        // https://stackoverflow.com/a/51942991
+        this.fps_interval = 1 / 30 // FRAMERATE limiter
+        this.fps_delta = 0
        
         this.starfield = new Starfield(10000);
         this.starfield.renderOrder = 1
@@ -94,8 +97,8 @@ export default class Game {
     initTracks(n){
         const INNER_TRACK_RADIUS = 100
         for(var i=0; i<n; i++){
-            //var track = new CircleTrack(INNER_TRACK_RADIUS + 10*i,0.5 + (i / 10), 22 , i);
-            var track = new MobiusTrack(INNER_TRACK_RADIUS + 10*i,0.5 + (i / 10),18 + 4*i, i);
+            var track = new CircleTrack(INNER_TRACK_RADIUS + 10*i,0.5 + (i / 10), 22 , i);
+            //var track = new MobiusTrack(INNER_TRACK_RADIUS + 10*i,0.5 + (i / 10),18 + 4*i, i);
             track.generateObstacles(this.world);
             track.setOffset(INNER_TRACK_RADIUS);
             if(i > 0){
@@ -190,9 +193,7 @@ export default class Game {
     setTrack(track,transition_time){
         track.visible = true;
         this.ship.extent = track.extent;
-        new TWEEN.Tween(track.position).to({
-            y: track.radius
-        },transition_time).start()
+        track.make_current(transition_time)
     }
 
     update(delta,time){
@@ -241,10 +242,16 @@ export default class Game {
     animate(time) {
         if(this.destroyed){return}
 
-        requestAnimationFrame( () => { this.animate() } );            
+        requestAnimationFrame( t => { this.animate(t) } );
+
         const delta = this.clock.getDelta();
-        this.update(delta,time);
-        this.renderer.render( this.scene, this.camera );
+        
+        //this.fps_delta += delta
+        //if(this.fps_delta > this.fps_interval){
+            this.update(delta,time);
+            this.renderer.render( this.scene, this.camera );
+            this.fps_delta = this.fps_delta % this.fps_interval;
+        //}
     }
 
     getCurrentTrack(){
