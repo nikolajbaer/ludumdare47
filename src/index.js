@@ -39,7 +39,6 @@ function main(){
     
     g.initTracks(5);
     g.initAudio();
-    //g.initShip();
     g.sounds.playTitleMusic();
     g.clock.start();
     g.animate();

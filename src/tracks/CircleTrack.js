@@ -5,8 +5,9 @@ import * as THREE from "three";
 export default class CircleTrack extends AbstractTrack {
     constructor( radius, speed, width, idx ){ 
         super(radius, speed, width, idx);
+        this.current = false;
         this.axis = new THREE.Vector3(1,0,0) 
-        this.allRotations = false;
+        this.allRotations = true;
         this.bodyMeshes = [];
         this.trackMaterials = [
             new THREE.MeshPhysicalMaterial({transparent: true, clearcoat: 1.0, metalness: 0.9, color: this.colorPair[0] }),
@@ -66,7 +67,7 @@ export default class CircleTrack extends AbstractTrack {
     }
   
     spin(delta){
-        if(this.allRotations) {
+        if(this.allRotations && !this.current) {
             this.pivot.rotateZ(-this.speed*0.25*delta)
             this.pivot.rotateY(this.speed*delta);
         }

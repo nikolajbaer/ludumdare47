@@ -34,7 +34,6 @@ class Particle extends THREE.Object3D {
     constructor(startingPosition) {
         super();
         this.particle_mat = new THREE.MeshLambertMaterial({ color: COLORS[Math.floor(Math.random() * COLORS.length)]})
-
         this.clock = new THREE.Clock();
         this.clock.start();
         this.ttl = 0.25;
@@ -111,6 +110,15 @@ class Ship extends THREE.Object3D {
         this.poof_geom = new THREE.SphereGeometry();
         this.poof_mat = new THREE.MeshLambertMaterial({ color: 0xff00ff, transparent: true, opacity:0.8 });
         this.float = true // bobbing effect
+    }
+
+    powerupInvincible(how_long) {
+        this.invincible = true;
+        if (this.invincibleTimeout) {
+            clearTimeout(this.invincibleTimeout);
+            this.invincibleTimeout = false;
+        }
+        this.invincibleTimeout = setTimeout(_e => {this.invincible = false}, how_long);
     }
 
     particleReport() {

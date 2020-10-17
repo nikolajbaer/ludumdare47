@@ -86,9 +86,20 @@ export default class AbstractTrack extends THREE.Group {
     }
 
     make_current(transition_time){
+        new TWEEN.Tween(this.pivot.rotation).to({
+            x: Math.PI/2,
+            z: Math.PI/2
+        }, transition_time).start()
+
+        new TWEEN.Tween(this.rotation).to({
+            y: Math.PI/2
+        }, transition_time).start()
+
         new TWEEN.Tween(this.pivot.position).to({
+            z: 0,
+            y: 0,
             y: this.radius
-        },transition_time).start()
+        }, transition_time).start()
     }
 
     deactivate(){
@@ -115,7 +126,7 @@ export default class AbstractTrack extends THREE.Group {
         stopCar.start();
     }
     
-    /** Abstrct Methods to override **/
+    /** Abstract Methods to override **/
 
     generateObstacles(world){
     }

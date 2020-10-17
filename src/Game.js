@@ -107,6 +107,7 @@ export default class Game {
             this.scene.add(track)
             this.tracks.push(track)
         }
+        this.tracks[0].current = true;
     }
 
     initAudio(){
@@ -134,7 +135,10 @@ export default class Game {
                 },1200)
             }else{
                 const nextTrack = this.getCurrentTrack()
-                this.setTrack(nextTrack,1500)
+                this.ship.powerupInvincible(1000);
+                nextTrack.current = true;
+                // rotate the next track so it is under the ship and stays there.
+                this.setTrack(nextTrack,500)
                 const remaining = this.getTracksRemaining()
                 this.hud.flash(`${remaining} Loop${ (remaining > 1)?"s":"" } Left!`,2000)
             }
@@ -144,7 +148,9 @@ export default class Game {
             this.shipControls.forceFeedback(150);
             this.ship.explode(3,150,false)
             this.sounds.triggerSound('collide1');
-            this.getCurrentTrack().handleCrash();
+            if (!this.ship.invincible) {
+                this.getCurrentTrack().handleCrash();
+            }
         })
         window.addEventListener("coinCollected", e => {
             this.getCurrentTrack().collect(e.detail.value)
@@ -175,6 +181,7 @@ export default class Game {
         },2000).start().onComplete( e => {
             this.hud.update_score(this.tracks.length, this.getCurrentTrack())
         })
+        this.ship.powerupInvincible(3000);
         this.animate();
         this.sounds.playMusic();
         window.setTimeout(_ => {
@@ -194,6 +201,7 @@ export default class Game {
         track.visible = true;
         this.ship.extent = track.extent;
         track.make_current(transition_time)
+
     }
 
     updateShip(delta) {
