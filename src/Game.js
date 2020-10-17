@@ -196,22 +196,25 @@ export default class Game {
         track.make_current(transition_time)
     }
 
-    update(delta,time){
-        TWEEN.update(time)
-
+    updateShip(delta) {
         if(this.ship == null){ return }
 
         if( this.shipControls.gp != null){
             this.shipControls.checkAxis(this.ship)
         }
+        this.ship.update(delta, this.clock.elapsedTime)
 
+    }
+
+    update(delta,time){
+        TWEEN.update(time)
+        this.updateShip(delta);
+        
         this.tracks.forEach( t => {
             if (!this.paused) {
                 t.spin(delta)
             }
         })
-
-        this.ship.update(delta,this.clock.elapsedTime)
 
         this.world.step(delta)
         this.world.bodies.forEach( b => {
@@ -245,13 +248,11 @@ export default class Game {
         requestAnimationFrame( t => { this.animate(t) } );
 
         const delta = this.clock.getDelta();
-        
-        //this.fps_delta += delta
-        //if(this.fps_delta > this.fps_interval){
-            this.update(delta,time);
-            this.renderer.render( this.scene, this.camera );
-            this.fps_delta = this.fps_delta % this.fps_interval;
-        //}
+     
+        this.update(delta,time);
+        this.renderer.render( this.scene, this.camera );
+        this.fps_delta = this.fps_delta % this.fps_interval;
+    
     }
 
     getCurrentTrack(){
