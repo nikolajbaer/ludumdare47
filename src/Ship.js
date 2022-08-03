@@ -96,6 +96,8 @@ class Ship extends THREE.Object3D {
 
         // tween to target position
         this.tweenX = null;
+        this.tweenRot = null;
+        this.slide = 0;
 
         if(difficulty == "easy"){
             this.health = 500;
@@ -126,17 +128,38 @@ class Ship extends THREE.Object3D {
     }
 
     tweenTo(x,zrot){
+        console.log("sliding",x,zrot)
+        if(this.tweenX){ this.tweenX.stop(); this.tweenX = null }
+        if(this.tweenRot){ this.tweenRot.stop(); this.tweenRot = null }
+
         this.tweenX = new TWEEN.Tween(this.mesh.position).to({
             x:x,
-        },this.slide_speed).start();
-        new TWEEN.Tween(this.mesh.rotation).to({
+        },this.slide_speed)
+        this.tweenX.start();
+        this.tweenRot = new TWEEN.Tween(this.mesh.rotation).to({
             z: zrot,
-        },this.slide_speed).start();
+        },this.slide_speed)
+        this.tweenRot.start();
     }
 
-    slideLeft(){ this.tweenTo( -this.extent, -THREE.MathUtils.degToRad(-25) ) }
-    slideRight(){ this.tweenTo( this.extent,  -THREE.MathUtils.degToRad(25) ) }
-    recenter(){ this.tweenTo( 0 , 0) }
+    slideLeft(){ 
+        if(this.slide != -1){
+            this.tweenTo( -this.extent, -THREE.MathUtils.degToRad(-25) ) 
+            this.slide = -1 
+        }
+    }
+    slideRight(){ 
+        if(this.slide != 1){
+            this.tweenTo( this.extent,  -THREE.MathUtils.degToRad(25) ) 
+            this.slide = 1 
+        }
+    }
+    recenter(){ 
+        if(this.slide != 0){
+            this.tweenTo( 0 , 0) 
+            this.slide = 0
+        }
+    }
 
     setCamera(camera) {
         document.addEventListener('meshLoaded', evt => {

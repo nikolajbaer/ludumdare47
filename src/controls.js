@@ -50,6 +50,7 @@ export default class Controls {
             }
         });
 
+        /*
         window.addEventListener("touchstart", ev => {
             if( !this.active){ return }
             const x = ev.targetTouches[0].clientX;
@@ -63,16 +64,23 @@ export default class Controls {
         window.addEventListener("touchend", ev => {
             ship.recenter()
         })
-
+        */
 
         window.addEventListener("keyup", ev => {
-            ship.recenter();
-            if( ev.key == ' '){
-                console.log("Key",ev.key)
-                window.dispatchEvent(new Event('idpause'))
+            switch(ev.key){
+                case 'a':
+                case 'd':
+                case 'ArrowLeft':
+                case 'ArrowRight':
+                    ship.recenter();
+                    break;
+                case ' ':
+                    window.dispatchEvent(new Event('idpause'))
+                    break
             }
         });
 
+        /*
         window.addEventListener("gamepadconnected", e => {
             if( this.gp == null ){
                 this.gp = e.gamepad
@@ -84,6 +92,7 @@ export default class Controls {
                 this.gp = null
             }
         });
+        */
         this.active = true;
     }
 }

@@ -200,9 +200,11 @@ export default class Game {
 
         if(this.ship == null){ return }
 
+        /*
         if( this.shipControls.gp != null){
             this.shipControls.checkAxis(this.ship)
         }
+        */
 
         this.tracks.forEach( t => {
             if (!this.paused) {
